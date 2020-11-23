@@ -42,8 +42,7 @@ jobs:
       run: python ci/setup_tests.py
 
     - name: run tests
-      run: PYTEST_BACKENDS=$BACKENDS ./ci/run_tests.sh
-      python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
+      run: python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
 
   lint:
     name: Lint
