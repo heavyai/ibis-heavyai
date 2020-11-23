@@ -4,7 +4,7 @@ channels:
 dependencies:
 
 # core
-- ibis>=2.0
+- ibis  # TODO: require Ibis 2.0 when it's released
 - pymapd>=0.24
 - pyarrow>=0.15.0
 

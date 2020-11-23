@@ -13,7 +13,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.7',
     install_requires=[
-        'ibis>=2.0',
+        'ibis',  # TODO require ibis 2.0 when it's released
         'pymapd>=0.24',
         'pyarrow',
     ],
