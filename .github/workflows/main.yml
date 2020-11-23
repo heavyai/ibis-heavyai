@@ -1,0 +1,16 @@
+name: Main
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+jobs:
+  setup_ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: message
+        run: echo "Simple action to setup the CI, and start running for PRs"
