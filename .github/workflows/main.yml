@@ -7,10 +7,73 @@ on:
     branches: master
 
 jobs:
-  setup_ci:
+  tests:
+    name: Tests OmniSciDB
+    runs-on: ubuntu-latest
+    env:
+      BACKENDS: "omniscidb"
+    strategy:
+      fail-fast: false
+      matrix:
+        python_version: ["3.7"]
+    services:
+      omnisci:
+        image: omnisci/core-os-cpu:v5.3.0
+        ports:
+          - 6274:6274
+          - 6278:6278
+        volumes:
+          - omniscidb.conf:/omnisci-storage/omnisci.conf
+    steps:
+    - name: checkout
+      uses: actions/checkout@v1
+
+    - name: set conda path
+      run: echo "$CONDA/bin" >> $GITHUB_PATH
+
+    - name: set up environment
+      run: |
+        conda update -n base -c anaconda --all --yes conda
+        conda install -n base -c anaconda --yes  python=${PYTHON_VERSION}
+        conda env update -n base --file=environment.yml
+        python -m pip install -e .
+
+    - name: setup tests
+      run: python ci/setup_tests.py
+
+    - name: run tests
+      run: PYTEST_BACKENDS=$BACKENDS ./ci/run_tests.sh
+      python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
+
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
 
-      - name: message
-        run: echo "Simple action to setup the CI, and start running for PRs"
+    - name: checkout
+      uses: actions/checkout@v1
+
+    - name: set conda path
+      run: echo "$CONDA/bin" >> $GITHUB_PATH
+
+    - name: set up environment
+      run: |
+        conda update -n base -c anaconda --all --yes conda
+        conda install -n base -c anaconda --yes  python=${PYTHON_VERSION}
+        conda env update -n base --file=environment.yml
+        python -m pip install -e .
+
+    - name: lint
+      run: flake8 .
+
+    - name: mypy
+      run: mypy --ignore-missing-imports .
+      if: always()
+
+    - name: pydocstyle
+      run: pydocstyle .
+      if: always()
+
+    - name: isort
+      run: isort --check-only .
+      if: always()

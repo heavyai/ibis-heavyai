@@ -1,0 +1,16 @@
+name: ibis-omniscidb-dev
+channels:
+- conda-forge
+dependencies:
+
+# core
+- ibis>=2.0
+- pymapd>=0.24
+- pyarrow>=0.15.0
+
+# dev
+- flake8
+- mypy
+- isort
+- pydocstyle
+- setuptools-scm
