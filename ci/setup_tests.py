@@ -158,6 +158,6 @@ if __name__ == '__main__':
          host='localhost',
          port=6274,
          user='admin',
-         password='JyperInteractive',
+         password='HyperInteractive',
          database='ibis_testing',
          protocol='binary')
