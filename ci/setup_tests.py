@@ -107,7 +107,7 @@ def main(schema, tables, data_directory, **params):
     )
 
     # create tables
-    for stmt in filter(None, map(str.strip, schema.read().split(';'))):
+    for stmt in filter(None, map(str.strip, open(schema).read().split(';'))):
         try:
             conn.execute(stmt)
         except Exception:
