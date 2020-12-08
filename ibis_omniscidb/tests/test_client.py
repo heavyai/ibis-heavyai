@@ -1,17 +1,16 @@
 import pathlib
 from typing import Optional
 
+import ibis
+import ibis.common.exceptions as com
+import ibis.expr.types as ir
 import mock
 import pandas as pd
 import pyarrow
 import pytest
+from ibis.tests.util import assert_equal
 from pkg_resources import get_distribution, parse_version
 from pytest import param
-
-import ibis
-import ibis.common.exceptions as com
-import ibis.expr.types as ir
-from ibis.tests.util import assert_equal
 
 pymapd = pytest.importorskip('pymapd')
 

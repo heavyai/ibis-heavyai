@@ -1,11 +1,10 @@
 import re
 
+import ibis
 import numpy as np
 import pandas as pd
 import pytest
 from pytest import param
-
-import ibis
 
 pytestmark = pytest.mark.omniscidb
 pytest.importorskip('pymapd')

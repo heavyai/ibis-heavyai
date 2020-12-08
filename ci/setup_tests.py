@@ -1,12 +1,12 @@
 import os
-import sys
-import shutil
 import pathlib
+import shutil
+import sys
 import urllib
 import zipfile
 
-import pymapd
 import pandas
+import pymapd
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 

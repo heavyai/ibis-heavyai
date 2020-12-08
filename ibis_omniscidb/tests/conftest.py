@@ -2,11 +2,10 @@
 import os
 import typing
 
-import pandas
-import pytest
-
 import ibis
 import ibis.util as util
+import pandas
+import pytest
 
 OMNISCIDB_HOST = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
 OMNISCIDB_PORT = int(os.environ.get('IBIS_TEST_OMNISCIDB_PORT', 6274))

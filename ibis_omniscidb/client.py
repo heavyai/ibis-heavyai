@@ -2,23 +2,22 @@
 from pathlib import Path
 from typing import Optional, Union
 
-import pandas as pd
-import pkg_resources
-import pyarrow
-import pymapd
-import regex as re
-from pymapd._parsers import _extract_column_details
-from pymapd.cursor import Cursor
-from pymapd.dtypes import TDatumType as pymapd_dtype
-
 import ibis.common.exceptions as com
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
+import pandas as pd
+import pkg_resources
+import pyarrow
+import pymapd
+import regex as re
 from ibis.backends.base_sqlalchemy.compiler import DDL, DML
 from ibis.client import Database, DatabaseEntity, Query, SQLClient
 from ibis.util import log
+from pymapd._parsers import _extract_column_details
+from pymapd.cursor import Cursor
+from pymapd.dtypes import TDatumType as pymapd_dtype
 
 from . import ddl
 from . import dtypes as omniscidb_dtypes
