@@ -37,11 +37,11 @@ jobs:
         conda update -n base -c anaconda --all --yes conda
         conda install -n base -c anaconda --yes python=${{ matrix.python_version }}
         if [[ "${{ matrix.pymapd_version }}" == "dev" ]]; then
-          conda env update -n base --file=environment.yml
-        else
           grep -v "pymapd" environment.yml > environment_no_pymapd.yml
           conda env update -n base --file=environment_no_pymapd.yml
           pip install git+https://github.com/omnisci/pymapd.git
+        else
+          conda env update -n base --file=environment.yml
         fi
         python -m pip install -e .
 
