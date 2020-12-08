@@ -1,3 +1,9 @@
+"""
+Script to set up the tests of the Ibis OmniSciDB backend.
+
+It downloads the data from the Ibis repository, and loads
+it into the local OmniSciDB instance.
+"""
 import os
 import pathlib
 import shutil
@@ -12,6 +18,7 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def download(repo_url, directory):
+    """Download and extract the data to use for the tests."""
     directory = pathlib.Path(directory)
     # download the master branch
     url = repo_url + '/archive/master.zip'
@@ -44,6 +51,7 @@ def download(repo_url, directory):
 
 
 def read_tables(names, data_directory):
+    """Yield the data tables as pandas dataframes."""
     for name in names:
         path = data_directory / '{}.csv'.format(name)
 
@@ -66,7 +74,7 @@ def read_tables(names, data_directory):
 
 
 def main(schema, tables, data_directory, **params):
-
+    """Create the schema and fetch and load the data into it."""
     data_directory = pathlib.Path(data_directory)
     reserved_words = ['table', 'year', 'month']
 

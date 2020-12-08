@@ -41,7 +41,7 @@ def test_table(con):
     Define fixture for test table.
 
     Yields
-    -------
+    ------
     ibis.expr.types.TableExpr
     """
     table_name = _random_identifier('table')
@@ -189,7 +189,7 @@ def temp_database(con, test_data_db: str) -> str:
     test_data_db : str
 
     Yields
-    -------
+    ------
     str
     """
     name = _random_identifier('database')

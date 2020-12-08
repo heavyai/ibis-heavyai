@@ -1,3 +1,4 @@
+"""Ibis OmniSciDB backend."""
 import os
 
 import setuptools
