@@ -16,6 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         python_version: ["3.7"]
+        pymapd_version: ["stable", "dev"]
     services:
       omnisci:
         image: omnisci/core-os-cpu:v5.3.0
@@ -34,8 +35,14 @@ jobs:
     - name: set up environment
       run: |
         conda update -n base -c anaconda --all --yes conda
-        conda install -n base -c anaconda --yes  python=${PYTHON_VERSION}
-        conda env update -n base --file=environment.yml
+        conda install -n base -c anaconda --yes python=${PYTHON_VERSION}
+        if [[ "$PYMAPD_VERSION" == "dev" ]]; do
+          conda env update -n base --file=environment.yml
+        else
+          grep -v "pymapd" environment.yml > environment_no_pymapd.yml
+          conda env update -n base --file=environment_no_pymapd.yml
+          pip install git+https://github.com/omnisci/pymapd.git
+        fi
         python -m pip install -e .
 
     - name: setup tests
