@@ -153,7 +153,7 @@ def _random_identifier(suffix):
 
 
 @pytest.fixture
-def temp_table(con) -> str:
+def temp_table(con) -> typing.Generator[str, None, None]:
     """Return a temporary table name.
 
     Parameters
@@ -180,7 +180,7 @@ def test_data_db() -> str:
 
 
 @pytest.fixture
-def temp_database(con, test_data_db: str) -> str:
+def temp_database(con, test_data_db: str) -> typing.Generator[str, None, None]:
     """Create a temporary database.
 
     Parameters

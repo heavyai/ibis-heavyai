@@ -1216,7 +1216,7 @@ class OmniSciDBClient(SQLClient):
         """Get the current database name."""
         return self.db_name
 
-    def set_database(self, name: str):
+    def set_database(self, name: Optional[str]):
         """Set a given database for the current connect.
 
         Parameters

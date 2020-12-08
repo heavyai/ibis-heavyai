@@ -2,7 +2,7 @@
 import warnings
 from datetime import date, datetime
 from io import StringIO
-from typing import Callable
+from typing import Callable, Dict
 
 import ibis
 import ibis.common.exceptions as com
@@ -951,10 +951,10 @@ _binary_infix_ops = {
     ops.NotEquals: binary_infix_op('<>'),
 }
 
-_unary_ops = {}
+_unary_ops: Dict = {}
 
 # COMPARISON
-_comparison_ops = {}
+_comparison_ops: Dict = {}
 
 
 # MATH
@@ -1156,7 +1156,8 @@ _unsupported_ops = [
     ops.Union,
 ]
 
-_unsupported_ops = {k: raise_unsupported_op_error for k in _unsupported_ops}
+_unsupported_ops_dict = {k: raise_unsupported_op_error
+                         for k in _unsupported_ops}
 
 # registry
 _operation_registry = {**operation_registry}
@@ -1175,4 +1176,4 @@ _operation_registry.update(_agg_ops)
 _operation_registry.update(_geospatial_ops)
 _operation_registry.update(_window_ops)
 # the last update should be with unsupported ops
-_operation_registry.update(_unsupported_ops)
+_operation_registry.update(_unsupported_ops_dict)

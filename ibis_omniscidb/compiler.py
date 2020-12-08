@@ -1,4 +1,5 @@
 """OmniSciDB Compiler module."""
+import typing
 from io import StringIO
 
 import ibis
@@ -128,7 +129,7 @@ class OmniSciDBSelect(compiler.Select):
         """
         return super().format_select_set()
 
-    def format_group_by(self) -> str:
+    def format_group_by(self) -> typing.Optional[str]:
         """Format the group by clause.
 
         Returns

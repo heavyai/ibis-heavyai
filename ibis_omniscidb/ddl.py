@@ -661,7 +661,7 @@ class LoadData(OmniSciDBDDL):
         self,
         table_name: str,
         source: Union[str, Path],
-        **kwargs: Dict[str, Any],
+        **kwargs,
     ):
         self.table_name = table_name
         self.source = source
