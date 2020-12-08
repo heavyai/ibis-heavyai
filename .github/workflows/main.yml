@@ -35,8 +35,8 @@ jobs:
     - name: set up environment
       run: |
         conda update -n base -c anaconda --all --yes conda
-        conda install -n base -c anaconda --yes python=${PYTHON_VERSION}
-        if [[ "$PYMAPD_VERSION" == "dev" ]]; then
+        conda install -n base -c anaconda --yes python=${{ matrix.python_version }}
+        if [[ "${{ matrix.pymapd_version }}" == "dev" ]]; then
           conda env update -n base --file=environment.yml
         else
           grep -v "pymapd" environment.yml > environment_no_pymapd.yml
