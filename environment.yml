@@ -10,6 +10,7 @@ dependencies:
 
 # dev
 - flake8
+- flake8-comprehensions
 - mypy
 - isort
 - pydocstyle
