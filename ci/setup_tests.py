@@ -19,7 +19,6 @@ BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 def download(repo_url, directory):
     """Download and extract the data to use for the tests."""
-    directory = pathlib.Path(directory)
     # download the master branch
     url = repo_url + '/archive/master.zip'
     # download the zip next to the target directory with the same name
@@ -73,10 +72,12 @@ def read_tables(names, data_directory):
         yield name, df
 
 
-def main(schema, tables, data_directory, **params):
+def main(repo_url, schema, tables, data_directory, **params):
     """Create the schema and fetch and load the data into it."""
     data_directory = pathlib.Path(data_directory)
     reserved_words = ['table', 'year', 'month']
+
+    download(repo_url, data_directory)
 
     # connection
     print('Initializing OmniSci...', file=sys.stderr)
@@ -160,7 +161,8 @@ if __name__ == '__main__':
               'awards_players',
               'geo']
     data_directory = '/tmp/'
-    main(schema=schema,
+    main(repo_url='https://github.com/ibis-project/testing-data',
+         schema=schema,
          tables=tables,
          data_directory=data_directory,
          host='localhost',
