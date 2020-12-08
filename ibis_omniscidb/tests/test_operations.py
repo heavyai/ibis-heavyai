@@ -6,9 +6,6 @@ import pandas as pd
 import pytest
 from pytest import param
 
-pytestmark = pytest.mark.omniscidb
-pytest.importorskip('pymapd')
-
 
 @pytest.mark.parametrize(
     ('result_fn', 'expected'),

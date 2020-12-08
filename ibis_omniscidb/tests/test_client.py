@@ -7,15 +7,11 @@ import ibis.expr.types as ir
 import mock
 import pandas as pd
 import pyarrow
+import pymapd
 import pytest
 from ibis.tests.util import assert_equal
 from pkg_resources import get_distribution, parse_version
 from pytest import param
-
-pymapd = pytest.importorskip('pymapd')
-
-
-pytestmark = pytest.mark.omniscidb
 
 
 def test_table(alltypes):
