@@ -8,7 +8,7 @@ import os
 import pathlib
 import shutil
 import sys
-import urllib
+import urllib.request
 import zipfile
 
 import pandas
@@ -27,7 +27,7 @@ def download(repo_url, directory):
     if not path.exists():
         print(f'Downloading {url} to {path}...', file=sys.stderr)
         path.parent.mkdir(parents=True, exist_ok=True)
-        urllib.urlretrieve(url, path)
+        urllib.request.urlretrieve(url, path)
     else:
         print(f'Skipping download: {path} already exists')
 
