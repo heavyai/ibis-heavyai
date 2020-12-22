@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Script to set up the tests of the Ibis OmniSciDB backend.
 
@@ -6,7 +7,6 @@ it into the local OmniSciDB instance.
 """
 import os
 import pathlib
-import shutil
 import sys
 import urllib.request
 import zipfile
@@ -22,7 +22,7 @@ def download(repo_url, directory):
     # download the master branch
     url = repo_url + '/archive/master.zip'
     # download the zip next to the target directory with the same name
-    path = directory.with_suffix('.zip')
+    path = directory / 'master.zip'
 
     if not path.exists():
         print(f'Downloading {url} to {path}...', file=sys.stderr)
@@ -34,25 +34,14 @@ def download(repo_url, directory):
     print(f'Extracting archive to {directory}')
 
     # extract all files
-    extract_to = directory.with_name(directory.name + '_extracted')
     with zipfile.ZipFile(str(path), 'r') as f:
-        f.extractall(str(extract_to))
-
-    # remove existent folder
-    if directory.exists():
-        shutil.rmtree(str(directory))
-
-    # rename to the target directory
-    (extract_to / 'testing-data-master').rename(directory)
-
-    # remove temporary extraction folder
-    extract_to.rmdir()
+        f.extractall(str(directory))
 
 
 def read_tables(names, data_directory):
     """Yield the data tables as pandas dataframes."""
     for name in names:
-        path = data_directory / '{}.csv'.format(name)
+        path = data_directory / 'testing-data-master' / '{}.csv'.format(name)
 
         params = {}
 
