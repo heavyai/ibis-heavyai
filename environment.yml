@@ -9,6 +9,7 @@ dependencies:
 - pyarrow>=0.15.0
 
 # dev
+- pytest
 - flake8
 - flake8-comprehensions
 - mypy
