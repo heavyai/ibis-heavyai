@@ -1,6 +1,6 @@
 # core
 ibis-framework
-pymapd=0.24
+pymapd>=0.24
 pyarrow>=0.15.0
 
 # dev
