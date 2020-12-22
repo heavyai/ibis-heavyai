@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ["3.7"]
-        pymapd_version: ["stable", "dev"]
+        python-version: ["3.7"]
+        pymapd-version: ["stable", "dev"]
     services:
       omnisci:
         image: omnisci/core-os-cpu:v5.3.0
@@ -29,19 +29,19 @@ jobs:
     - name: checkout
       uses: actions/checkout@v1
 
-    - name: set conda path
-      run: echo "$CONDA/bin" >> $GITHUB_PATH
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-    - name: set up environment
+    - name: install dependencies
       run: |
-        conda update -n base -c anaconda --all --yes conda
-        conda install -n base -c anaconda --yes python=${{ matrix.python_version }}
-        if [[ "${{ matrix.pymapd_version }}" == "dev" ]]; then
-          grep -v "pymapd" environment.yml > environment_no_pymapd.yml
-          conda env update -n base --file=environment_no_pymapd.yml
+        if [[ "${{ matrix.pymapd-version }}" == "dev" ]]; then
+          grep -v "pymapd" requirements.txt > requirements_no_pymapd.txt
+          python -m pip install -r requirements_no_pymapd.txt
           pip install git+https://github.com/omnisci/pymapd.git
         else
-          conda env update -n base --file=environment.yml
+          python -m pip install -r requirements.txt
         fi
         python -m pip install -e .
 
@@ -59,14 +59,14 @@ jobs:
     - name: checkout
       uses: actions/checkout@v1
 
-    - name: set conda path
-      run: echo "$CONDA/bin" >> $GITHUB_PATH
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.7"
 
-    - name: set up environment
+    - name: install dependencies
       run: |
-        conda update -n base -c anaconda --all --yes conda
-        conda install -n base -c anaconda --yes  python=${PYTHON_VERSION}
-        conda env update -n base --file=environment.yml
+        python -m pip install -r requirements.txt
         python -m pip install -e .
 
     - name: lint

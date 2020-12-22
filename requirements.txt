@@ -1,0 +1,12 @@
+# core
+ibis-framework
+pymapd=0.24
+pyarrow>=0.15.0
+
+# dev
+flake8
+flake8-comprehensions
+mypy
+isort
+pydocstyle
+setuptools-scm
