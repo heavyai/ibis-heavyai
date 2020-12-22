@@ -6,6 +6,7 @@ pyarrow>=0.15.0
 # dev
 pytest
 pytest-cov
+pytest-mock
 mock
 flake8
 flake8-comprehensions
