@@ -68,18 +68,11 @@ jobs:
       run: |
         python -m pip install -r requirements.txt
         python -m pip install -e .
+        pre-commit install
 
-    - name: lint
-      run: flake8 .
-
-    - name: mypy
-      run: mypy --ignore-missing-imports .
-      if: always()
+    - name: pre-commit check
+      run: pre-commit run --all-files
 
     - name: pydocstyle
       run: pydocstyle .
-      if: always()
-
-    - name: isort
-      run: isort --check-only .
       if: always()

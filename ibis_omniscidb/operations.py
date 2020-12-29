@@ -13,9 +13,12 @@ import ibis.expr.rules as rlz
 import ibis.expr.types as ir
 import ibis.util as util
 from ibis import literal as L
-from ibis.backends.base_sql import (cumulative_to_window, format_window,
-                                    operation_registry,
-                                    time_range_to_range_window)
+from ibis.backends.base_sql import (
+    cumulative_to_window,
+    format_window,
+    operation_registry,
+    time_range_to_range_window,
+)
 
 from . import dtypes as omniscidb_dtypes
 from .identifiers import quote_identifier
