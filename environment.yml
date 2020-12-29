@@ -9,6 +9,7 @@ dependencies:
 - pyarrow>=0.15.0
 
 # dev
+- black
 - pytest
 - pytest-cov
 - pytest-mock
