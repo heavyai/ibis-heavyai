@@ -946,6 +946,17 @@ def _window_op_one_param(name):
     return formatter
 
 
+# UDF
+
+
+def _udf(traslator, expr):
+    """UDF translation."""
+    f_name = expr._arg.func.__name__
+    args_translated = ', '.join(map(traslator.translate, expr._arg.func_args))
+
+    return '{}({})'.format(f_name, args_translated)
+
+
 # operation map
 
 _binary_infix_ops = {
@@ -1108,6 +1119,14 @@ _window_ops = {
     ops.WindowOp: _window,
 }
 
+# UDF
+_udf_ops = {
+    ops.ElementWiseVectorizedUDF: _udf,
+    ops.ReductionVectorizedUDF: _udf,
+    ops.AnalyticVectorizedUDF: _udf,
+}
+
+
 # UNSUPPORTED OPERATIONS
 _unsupported_ops = [
     # generic/aggregation
@@ -1179,5 +1198,6 @@ _operation_registry.update(_date_ops)
 _operation_registry.update(_agg_ops)
 _operation_registry.update(_geospatial_ops)
 _operation_registry.update(_window_ops)
+_operation_registry.update(_udf_ops)
 # the last update should be with unsupported ops
 _operation_registry.update(_unsupported_ops_dict)
