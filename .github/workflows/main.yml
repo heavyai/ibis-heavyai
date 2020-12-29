@@ -49,7 +49,7 @@ jobs:
       run: python ci/setup_tests.py
 
     - name: run tests
-      run: python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
+      run: make run-tests
 
   lint:
     name: Lint
