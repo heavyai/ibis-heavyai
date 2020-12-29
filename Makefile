@@ -1,0 +1,2 @@
+develop:
+	pre-commit install
