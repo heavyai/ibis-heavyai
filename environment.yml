@@ -9,6 +9,8 @@ dependencies:
 - pyarrow>=0.15.0
 
 # dev
+- pip
+- pre-commit
 - pytest
 - pytest-cov
 - pytest-mock
