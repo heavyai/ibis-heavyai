@@ -83,3 +83,7 @@ jobs:
     - name: isort
       run: isort --check-only .
       if: always()
+
+    - name: pre-commit hook check
+      run: pre-commit run --all-files
+      if: always()
