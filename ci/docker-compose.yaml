@@ -1,0 +1,17 @@
+
+version: '3'
+services:
+
+  omniscidb:
+    # NOTE: the image should be migrated to omnisci account
+    image: xmnlab/core-os-cpu
+    hostname: omniscidb
+    ports:
+      - 6274:6274
+      - 6278:6278
+    volumes:
+      - ./omnisci.conf:/omnisci-storage/omnisci.conf
+
+  waiter:
+    image: jwilder/dockerize
+    command: dockerize -wait tcp://omniscidb:6274
