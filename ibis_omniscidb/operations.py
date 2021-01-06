@@ -1159,8 +1159,9 @@ _unsupported_ops = [
     ops.Union,
 ]
 
-_unsupported_ops_dict = {k: raise_unsupported_op_error
-                         for k in _unsupported_ops}
+_unsupported_ops_dict = {
+    k: raise_unsupported_op_error for k in _unsupported_ops
+}
 
 # registry
 _operation_registry = {**operation_registry}
