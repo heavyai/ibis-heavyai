@@ -13,9 +13,12 @@ import ibis.expr.rules as rlz
 import ibis.expr.types as ir
 import ibis.util as util
 from ibis import literal as L
-from ibis.backends.base_sql import (cumulative_to_window, format_window,
-                                    operation_registry,
-                                    time_range_to_range_window)
+from ibis.backends.base_sql import (
+    cumulative_to_window,
+    format_window,
+    operation_registry,
+    time_range_to_range_window,
+)
 
 from . import dtypes as omniscidb_dtypes
 from .identifiers import quote_identifier
@@ -1156,8 +1159,9 @@ _unsupported_ops = [
     ops.Union,
 ]
 
-_unsupported_ops_dict = {k: raise_unsupported_op_error
-                         for k in _unsupported_ops}
+_unsupported_ops_dict = {
+    k: raise_unsupported_op_error for k in _unsupported_ops
+}
 
 # registry
 _operation_registry = {**operation_registry}

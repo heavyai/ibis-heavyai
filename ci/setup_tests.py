@@ -144,19 +144,23 @@ def main(repo_url, schema, tables, data_directory, **params):
 
 if __name__ == '__main__':
     schema = os.path.join(BASE_PATH, 'schema.sql')
-    tables = ['functional_alltypes',
-              'diamonds',
-              'batting',
-              'awards_players',
-              'geo']
+    tables = [
+        'functional_alltypes',
+        'diamonds',
+        'batting',
+        'awards_players',
+        'geo',
+    ]
     data_directory = '/tmp/'
-    main(repo_url='https://github.com/ibis-project/testing-data',
-         schema=schema,
-         tables=tables,
-         data_directory=data_directory,
-         host='localhost',
-         port=6274,
-         user='admin',
-         password='HyperInteractive',
-         database='ibis_testing',
-         protocol='binary')
+    main(
+        repo_url='https://github.com/ibis-project/testing-data',
+        schema=schema,
+        tables=tables,
+        data_directory=data_directory,
+        host='localhost',
+        port=6274,
+        user='admin',
+        password='HyperInteractive',
+        database='ibis_testing',
+        protocol='binary',
+    )
