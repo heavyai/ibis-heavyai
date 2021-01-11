@@ -2,3 +2,8 @@
 *.pyc
 __pycache__
 .ipynb_checkpoints
+.coverage
+coverage.xml
+*.egg-info/
+junit.xml
+.vscode/
