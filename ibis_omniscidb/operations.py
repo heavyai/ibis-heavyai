@@ -1101,6 +1101,7 @@ _window_ops = {
     ops.Lag: _shift_like('lag'),
     ops.Lead: _shift_like('lead', 1),
     ops.MinRank: lambda *args: 'rank()',
+    ops.NTile: _window_op_one_param('ntile'),
     # cume_dist vs percent_rank
     # https://github.com/ibis-project/ibis/issues/1975
     ops.PercentRank: lambda *args: 'cume_dist()',
@@ -1118,7 +1119,6 @@ _unsupported_ops = [
     ops.CumulativeAny,
     ops.CumulativeAll,
     ops.IdenticalTo,
-    ops.NTile,
     ops.NthValue,
     ops.GroupConcat,
     ops.IsInf,
