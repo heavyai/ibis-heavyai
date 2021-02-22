@@ -17,14 +17,6 @@ jobs:
       matrix:
         python-version: ["3.7"]
         pymapd-version: ["stable", "dev"]
-    services:
-      omnisci:
-        image: omnisci/core-os-cpu:v5.3.0
-        ports:
-          - 6274:6274
-          - 6278:6278
-        volumes:
-          - omniscidb.conf:/omnisci-storage/omnisci.conf
     steps:
     - name: checkout
       uses: actions/checkout@v1
@@ -33,6 +25,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: start omniscidb service
+      run: docker-compose --file ci/docker-compose.yaml up -d omniscidb
+
+    - name: wait for omniscidb service
+      run: docker-compose --file ci/docker-compose.yaml up waiter
 
     - name: install dependencies
       run: |
@@ -44,6 +42,9 @@ jobs:
           python -m pip install -r requirements.txt
         fi
         python -m pip install -e .
+
+    - name: show environment
+      run: pip list
 
     - name: setup tests
       run: python ci/setup_tests.py
@@ -69,6 +70,9 @@ jobs:
         python -m pip install -r requirements.txt
         python -m pip install -e .
         pre-commit install
+
+    - name: show environment
+      run: pip list
 
     - name: pre-commit check
       run: pre-commit run --all-files
