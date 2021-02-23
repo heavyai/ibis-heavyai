@@ -7,6 +7,7 @@ dependencies:
 - ibis-framework  # TODO: require Ibis 2.0 when it's released
 - pymapd>=0.24
 - pyarrow>=0.15.0
+- numpy<1.20
 
 # dev
 - black
