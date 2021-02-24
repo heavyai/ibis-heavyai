@@ -8,6 +8,7 @@ dependencies:
 - pymapd>=0.24
 - pyarrow>=0.15.0
 - numpy<1.20
+- rbc
 
 # dev
 - black

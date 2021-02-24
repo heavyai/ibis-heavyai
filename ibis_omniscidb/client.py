@@ -22,6 +22,7 @@ from pymapd.dtypes import TDatumType as pymapd_dtype
 from . import ddl
 from . import dtypes as omniscidb_dtypes
 from .compiler import OmniSciDBDialect, build_ast
+from .udf import OmniSciDBUDF
 
 try:
     from cudf import DataFrame as GPUDataFrame
@@ -649,6 +650,15 @@ class OmniSciDBClient(SQLClient):
                 dbname=database,
                 protocol=protocol,
             )
+
+        # used for UDF
+        self.udf = OmniSciDBUDF(
+            host=self.con._host,
+            port=self.con._port,
+            database=self.con._dbname,
+            user=self.con._user,
+            password=self.con._password,
+        )
 
     def __del__(self):
         """Close the connection when instance is deleted."""
