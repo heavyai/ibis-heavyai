@@ -44,7 +44,7 @@ jobs:
     - name: install dependencies
       run: |
         if [[ "${{ matrix.pymapd-version }}" == "dev" ]]; then
-          pip install git+https://github.com/omnisci/pymapd.git
+          pip install git+https://github.com/omnisci/pyomnisci.git
         fi
         python -m pip install --no-deps -e .
 

@@ -12,7 +12,7 @@ import urllib.request
 import zipfile
 
 import pandas
-import pymapd
+import pyomnisci
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -74,7 +74,7 @@ def main(repo_url, schema, tables, data_directory, **params):
     database = params["database"]
 
     if database != default_db:
-        conn = pymapd.connect(
+        conn = pyomnisci.connect(
             host=params['host'],
             user=params['user'],
             password=params['password'],
@@ -95,7 +95,7 @@ def main(repo_url, schema, tables, data_directory, **params):
             print(f'OmniSci DDL statement {stmt} failed', file=sys.stderr)
         conn.close()
 
-    conn = pymapd.connect(
+    conn = pyomnisci.connect(
         host=params['host'],
         user=params['user'],
         password=params['password'],

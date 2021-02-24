@@ -14,9 +14,17 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.7',
     install_requires=[
-        'ibis-framework',  # TODO require ibis 2.0 when it's released
-        'pymapd>=0.24',
+        'ibis-framework',  # TODO: require ibis 2.0 when it's released
+        'pandas',
+        'pyomnisci>=0.27.0',
+        'pyomniscidb>=5.5.2',
         'pyarrow',
+        'rbc-project>=0.4.0',
+        'sqlalchemy<1.4',  # TODO: it should be fixed by ibis 2.0
+        # numpy 1.20 has conflicts with pandas and pyarrow
+        # pyarrow.lib.ArrowTypeError: ('Did not pass numpy.dtype object',
+        #   'Conversion failed for column salary with type float64')
+        'numpy<1.20',
     ],
     setup_requires=['setuptools_scm'],
     use_scm_version=True,
