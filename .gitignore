@@ -7,3 +7,4 @@ coverage.xml
 *.egg-info/
 junit.xml
 .vscode/
+.eggs/

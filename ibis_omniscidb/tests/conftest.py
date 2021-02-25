@@ -120,6 +120,21 @@ def batting(con) -> ibis.expr.types.TableExpr:
 
 
 @pytest.fixture(scope='module')
+def geo_table(con) -> ibis.expr.types.TableExpr:
+    """Define a geo table fixture.
+
+    Parameters
+    ----------
+    con : ibis.omniscidb.OmniSciDBClient
+
+    Returns
+    -------
+    ibis.expr.types.TableExpr
+    """
+    return con.table('geo')
+
+
+@pytest.fixture(scope='module')
 def df_alltypes(alltypes: ibis.expr.types.TableExpr) -> pandas.DataFrame:
     """Return all the data for functional_alltypes table.
 
