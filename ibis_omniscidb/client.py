@@ -1288,7 +1288,7 @@ class OmniSciDBClient(SQLClient):
         -------
         if_exists : boolean
         """
-        return bool(self.list_tables(like=name, database=database))
+        return name in self.list_tables(database=database)
 
     def list_tables(self, like: str = None, database: str = None) -> list:
         """List all tables inside given or current database.
