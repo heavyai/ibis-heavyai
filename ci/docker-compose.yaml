@@ -2,7 +2,7 @@ version: '3'
 services:
 
   omniscidb:
-    image: omnisci/core-os-cpu:v5.4.0
+    image: omnisci/core-os-cpu:v5.5.2
     hostname: omniscidb
     ports:
       - 6274:6274

@@ -1012,6 +1012,7 @@ _geometric_ops = {
 # GEO SPATIAL
 _geospatial_ops = {
     ops.GeoArea: unary('ST_AREA'),
+    ops.GeoCentroid: unary('ST_CENTROID'),
     ops.GeoContains: fixed_arity('ST_CONTAINS', 2),
     ops.GeoDistance: fixed_arity('ST_DISTANCE', 2),
     ops.GeoDisjoint: fixed_arity('ST_DISJOINT', 2),
