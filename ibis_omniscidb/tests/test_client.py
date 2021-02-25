@@ -78,7 +78,7 @@ def test_compile_toplevel():
     assert str(result) == expected
 
 
-def text_exists_table_with_database(
+def test_exists_table_with_database(
     con, alltypes, test_data_db, temp_table, temp_database
 ):
     tmp_db = test_data_db
@@ -86,6 +86,8 @@ def text_exists_table_with_database(
 
     assert con.exists_table(temp_table, database=tmp_db)
     assert not con.exists_table(temp_table, database=temp_database)
+    # check it does exact match rather than partial
+    assert not con.exists_table(temp_table[:-2], database=tmp_db)
 
 
 def test_union_op(alltypes):
