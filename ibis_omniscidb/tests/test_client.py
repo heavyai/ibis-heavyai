@@ -330,3 +330,20 @@ def test_load_data(con, temp_table, method, format):
     result = con.table(temp_table).execute()
 
     pd.testing.assert_frame_equal(result, df_salary)
+
+
+def test_current_database(con):
+    assert 'ibis_testing' == con.current_database
+
+    db = con.database('omnisci')
+    assert 'omnisci' == db.name
+    assert 'omnisci' == db.client.current_database
+
+    assert 'ibis_testing' == con.current_database
+    con.db_name = 'nonesuch'
+    assert 'ibis_testing' == con.current_database
+
+
+def test_list_databases(con):
+    assert 'ibis_testing' in con.list_databases()
+    assert 'ibis_testing' in con.list_databases(like='ibis.*')

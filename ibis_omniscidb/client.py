@@ -1224,7 +1224,7 @@ class OmniSciDBClient(SQLClient):
     @property
     def current_database(self):
         """Get the current database name."""
-        return self.db_name
+        return self.con._client.get_session_info(self.con._session).database
 
     def set_database(self, name: Optional[str]):
         """Set a given database for the current connect.
@@ -1261,19 +1261,25 @@ class OmniSciDBClient(SQLClient):
             Method not supported yet.
         """
 
-    @com.mark_as_unsupported
-    def list_databases(self, like: str = None):
+    def list_databases(self, like: str = None) -> list:
         """List all databases.
 
         Parameters
         ----------
         like : str, optional
 
-        Raises
-        ------
-        NotImplementedError
-            Method not supported yet.
+        Returns
+        -------
+        list
         """
+        dbs = [
+            d.db_name
+            for d in self.con._client.get_databases(self.con._session)
+        ]
+        if like is None:
+            return dbs
+        pattern = re.compile(like)
+        return list(filter(lambda t: pattern.findall(t), dbs))
 
     def exists_table(self, name: str, database: str = None):
         """
