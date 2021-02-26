@@ -9,3 +9,5 @@ junit.xml
 .vscode/
 .eggs/
 rever/
+build/
+dist/
