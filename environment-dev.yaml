@@ -1,6 +1,7 @@
 name: ibis-omniscidb-dev
 channels:
 - conda-forge
+
 dependencies:
 
 # core

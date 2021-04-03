@@ -32,7 +32,9 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: ibis-omniscidb
+        channels: conda-forge
         environment-file: environment-dev.yaml
+        mamba-version: "*"
 
     - name: start omniscidb service
       run: docker-compose --file ci/docker-compose.yaml up -d omniscidb
@@ -81,7 +83,7 @@ jobs:
         pre-commit install
 
     - name: show environment
-      run: pip list
+      run: conda list
 
     - name: pre-commit check
       run: pre-commit run --all-files
