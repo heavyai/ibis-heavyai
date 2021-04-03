@@ -32,7 +32,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: ibis-omniscidb
-        environment-file: environment-dev.yml
+        environment-file: environment-dev.yaml
 
     - name: start omniscidb service
       run: docker-compose --file ci/docker-compose.yaml up -d omniscidb
@@ -73,7 +73,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: ibis-omniscidb
-        environment-file: environment-dev.yml
+        environment-file: environment-dev.yaml
 
     - name: install dependencies
       run: |
