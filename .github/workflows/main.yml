@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pymapd-version: ["stable", "dev"]
+        pyomnisci-version: ["stable", "dev"]
 
     defaults:
       run:
@@ -43,8 +43,9 @@ jobs:
 
     - name: install dependencies
       run: |
-        if [[ "${{ matrix.pymapd-version }}" == "dev" ]]; then
-          pip install git+https://github.com/omnisci/pyomnisci.git rbc-project>=0.4.0
+        if [[ "${{ matrix.pyomnisci-version }}" == "dev" ]]; then
+          pip install git+https://github.com/omnisci/pyomnisci.git
+          pip install rbc-project>=0.4.0
         fi
         python -m pip install --no-deps -e .
 
