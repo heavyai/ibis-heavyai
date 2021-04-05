@@ -1,6 +1,7 @@
 name: ibis-omniscidb-dev
 channels:
 - conda-forge
+
 dependencies:
 
 # core
@@ -9,6 +10,9 @@ dependencies:
 - pyarrow>=0.15.0
 - numpy<1.20
 - rbc
+- python 3.8.*
+# TODO: sqlalchemy pinning should be removed when Ibis 2.0 is released
+- sqlalchemy<1.4
 
 # dev
 - black
