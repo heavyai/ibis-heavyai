@@ -8,16 +8,15 @@ import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import pandas as pd
-import pkg_resources
 import pyarrow
-import pymapd
+import pyomnisci
 import regex as re
 from ibis.backends.base_sqlalchemy.compiler import DDL, DML
 from ibis.client import Database, DatabaseEntity, Query, SQLClient
 from ibis.util import log
-from pymapd._parsers import _extract_column_details
-from pymapd.cursor import Cursor
-from pymapd.dtypes import TDatumType as pymapd_dtype
+from omnisci._parsers import _extract_column_details
+from omnisci.cursor import Cursor
+from omnisci.dtypes import TDatumType as pyomnisci_dtype
 
 from . import ddl
 from . import dtypes as omniscidb_dtypes
@@ -55,12 +54,6 @@ def _validate_compatible(from_schema, to_schema):
                 'Cannot safely cast {0!r} to {1!r}'.format(lt, rt)
             )
     return
-
-
-class PyMapDVersionError(Exception):
-    """PyMapD version error exception."""
-
-    pass
 
 
 class OmniSciDBDataType:
@@ -203,14 +196,14 @@ class OmniSciDBGeoCursor(OmniSciDBDefaultCursor):
         col_names = [c.name for c in cursor_description]
         result = pd.DataFrame(cursor.fetchall(), columns=col_names)
 
-        # get geo types from pymapd
+        # get geo types from pyomnisci
         geotypes = (
-            pymapd_dtype.POINT,
-            pymapd_dtype.LINESTRING,
-            pymapd_dtype.POLYGON,
-            pymapd_dtype.MULTIPOLYGON,
-            pymapd_dtype.GEOMETRY,
-            pymapd_dtype.GEOGRAPHY,
+            pyomnisci_dtype.POINT,
+            pyomnisci_dtype.LINESTRING,
+            pyomnisci_dtype.POLYGON,
+            pyomnisci_dtype.MULTIPOLYGON,
+            pyomnisci_dtype.GEOMETRY,
+            pyomnisci_dtype.GEOGRAPHY,
         )
 
         geo_column = None
@@ -611,8 +604,6 @@ class OmniSciDBClient(SQLClient):
         ------
         Exception
             if the given execution_type is not valid.
-        PyMapDVersionError
-            if session_id is given but pymapd version is less or equal to 0.12
         """
         self.uri = uri
         self.user = user
@@ -629,11 +620,7 @@ class OmniSciDBClient(SQLClient):
         self.gpu_device = gpu_device
 
         if session_id:
-            if self.version < pkg_resources.parse_version('0.12.0'):
-                raise PyMapDVersionError(
-                    'Must have pymapd > 0.12 to use session ID'
-                )
-            self.con = pymapd.connect(
+            self.con = pyomnisci.connect(
                 uri=uri,
                 host=host,
                 port=port,
@@ -641,7 +628,7 @@ class OmniSciDBClient(SQLClient):
                 sessionid=session_id,
             )
         else:
-            self.con = pymapd.connect(
+            self.con = pyomnisci.connect(
                 uri=uri,
                 user=user,
                 password=password,
@@ -748,7 +735,7 @@ class OmniSciDBClient(SQLClient):
             (
                 r.col_name,
                 OmniSciDBDataType._omniscidb_to_ibis_dtypes[
-                    pymapd_dtype._VALUES_TO_NAMES[r.col_type.type]
+                    pyomnisci_dtype._VALUES_TO_NAMES[r.col_type.type]
                 ],
             )
             for r in result
@@ -1235,7 +1222,7 @@ class OmniSciDBClient(SQLClient):
         """
         if self.db_name != name and name is not None:
             self.con.close()
-            self.con = pymapd.connect(
+            self.con = pyomnisci.connect(
                 uri=self.uri,
                 user=self.user,
                 password=self.password,
@@ -1375,9 +1362,7 @@ class OmniSciDBClient(SQLClient):
         string
             Version of the backend library.
         """
-        # pymapd doesn't have __version__
-        dist = pkg_resources.get_distribution('pymapd')
-        return pkg_resources.parse_version(dist.version)
+        return pyomnisci.__version__
 
 
 @dt.dtype.register(OmniSciDBDataType)

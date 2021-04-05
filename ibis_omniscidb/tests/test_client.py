@@ -7,11 +7,15 @@ import ibis.expr.types as ir
 import mock
 import pandas as pd
 import pyarrow
-import pymapd
+import pyomnisci
 import pytest
 from ibis.tests.util import assert_equal
-from pkg_resources import get_distribution, parse_version
 from pytest import param
+
+import ibis_omniscidb
+
+# NOTE: TEMPORARY UNTIL IBIS 2.0 IS RELEASED
+ibis.omniscidb = ibis_omniscidb
 
 
 def test_table(alltypes):
@@ -42,10 +46,6 @@ def test_list_tables(con):
     assert len(con.list_tables(like='functional_alltypes')) == 1
 
 
-@pytest.mark.skipif(
-    parse_version(get_distribution('pymapd').version) < parse_version('0.12'),
-    reason='must have pymapd>=12 to connect to existing session',
-)
 def test_session_id_connection(session_con):
     new_connection = ibis.omniscidb.connect(
         protocol=session_con.protocol,
@@ -268,7 +268,7 @@ def test_cpu_execution_type(
 
     for mock_method_name in ('select_ipc', 'select_ipc_gpu'):
         mocked_method = mock.patch.object(
-            pymapd.connection.Connection,
+            pyomnisci.connection.Connection,
             mock_method_name,
             new=lambda *args, **kwargs: pd.DataFrame({'string_col': ['1']}),
         )
