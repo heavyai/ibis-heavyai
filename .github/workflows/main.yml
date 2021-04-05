@@ -44,8 +44,7 @@ jobs:
     - name: install dependencies
       run: |
         if [[ "${{ matrix.pyomnisci-version }}" == "dev" ]]; then
-          pip install git+https://github.com/omnisci/pyomnisci.git
-          pip install rbc-project>=0.4.0
+          pip install --no-deps git+https://github.com/omnisci/pyomnisci.git
         fi
         python -m pip install --no-deps -e .
 
