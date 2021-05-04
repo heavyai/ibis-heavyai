@@ -59,7 +59,7 @@ jobs:
       run: python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
 
     - name: run ibis tests
-      run: python -m pytest --pyargs ibis.backends.tests
+      run: PYTEST_BACKENDS="omniscidb" python -m pytest --pyargs ibis.backends.tests
   lint:
     name: Lint
     runs-on: ubuntu-latest
