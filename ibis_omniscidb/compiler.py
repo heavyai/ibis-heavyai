@@ -19,7 +19,7 @@ from .operations import _type_to_sql_string  # noqa: F401
 def build_ast(
     expr: ibis.Expr,
     context: compiler.QueryContext,
-) -> compiler.QueryAST:
+):
     """Build AST from given expression.
 
     Parameters
