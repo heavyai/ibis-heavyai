@@ -149,10 +149,7 @@ def test_drop_columns(con, test_table, column_names):
 @pytest.mark.parametrize(
     'properties',
     [
-        param(
-            {},
-            id='none',
-        ),
+        param({}, id='none',),
         param({'fragment_size': 10000000}, id='frag_size'),
         param(
             {'fragment_size': 0},
@@ -167,8 +164,7 @@ def test_drop_columns(con, test_table, column_names):
             {'max_rows': 0},
             id='max_rows0',
             marks=pytest.mark.xfail(
-                raises=Exception,
-                reason="MAX_ROWS must be a positive number",
+                raises=Exception, reason="MAX_ROWS must be a positive number",
             ),
         ),
         param(

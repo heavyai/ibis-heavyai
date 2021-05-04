@@ -17,8 +17,7 @@ from .operations import _type_to_sql_string  # noqa: F401
 
 
 def build_ast(
-    expr: ibis.Expr,
-    context: compiler.QueryContext,
+    expr: ibis.Expr, context: compiler.QueryContext,
 ) -> compiler.QueryAST:
     """Build AST from given expression.
 
@@ -37,8 +36,7 @@ def build_ast(
 
 
 def _get_query(
-    expr: ibis.Expr,
-    context: compiler.QueryContext,
+    expr: ibis.Expr, context: compiler.QueryContext,
 ):
     assert context is not None, 'context is None'
     ast = build_ast(expr, context)
@@ -47,10 +45,7 @@ def _get_query(
     return query
 
 
-def to_sql(
-    expr: ibis.Expr,
-    context: compiler.QueryContext = None,
-) -> str:
+def to_sql(expr: ibis.Expr, context: compiler.QueryContext = None,) -> str:
     """Convert expression to SQL statement.
 
     Parameters
@@ -294,7 +289,6 @@ class OmniSciDBDialect(compiler.Dialect):
 
 
 dialect = OmniSciDBDialect
-compiles = OmniSciDBExprTranslator.compiles
 rewrites = OmniSciDBExprTranslator.rewrites
 
 omniscidb_reg = omniscidb_ops._operation_registry
