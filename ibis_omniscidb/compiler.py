@@ -7,8 +7,8 @@ import ibis.common.exceptions as com
 import ibis.expr.operations as ops
 import ibis.expr.types as ir
 import ibis.util as util
+from ibis.backends.base.sql import compiler
 from ibis.backends.base_sql.compiler import BaseExprTranslator
-from ibis.backends.base_sqlalchemy import compiler
 from ibis.expr.api import _add_methods, _binop_expr, _unary_op
 
 from . import operations as omniscidb_ops
