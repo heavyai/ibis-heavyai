@@ -658,7 +658,10 @@ class LoadData(OmniSciDBDDL):
     """Generate DDL for LOAD DATA command. Cannot be cancelled."""
 
     def __init__(
-        self, table_name: str, source: Union[str, Path], **kwargs,
+        self,
+        table_name: str,
+        source: Union[str, Path],
+        **kwargs,
     ):
         self.table_name = table_name
         self.source = source
