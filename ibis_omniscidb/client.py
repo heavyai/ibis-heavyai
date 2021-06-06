@@ -825,6 +825,9 @@ class OmniSciDBClient(SQLClient):
 
         return result
 
+    def ast_schema(self, query_ast, ipc, gpu_device):
+        return super().ast_schema(query_ast)
+
     def fetch_from_cursor(self, cursor, schema):
         result = cursor.to_df()
         # TODO: try to use `apply_to` for cudf.DataFrame using cudf 0.9
@@ -993,7 +996,7 @@ class OmniSciDBClient(SQLClient):
           Database may throw exception if table does not exist
         """
         statement = ddl.DropView(name, database=database, must_exist=not force)
-        self.raw_sql(statement, False)
+        self.raw_sql(statement)
 
     def create_table(
         self,
