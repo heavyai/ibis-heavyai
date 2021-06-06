@@ -21,6 +21,10 @@ dependencies:
 # TODO: sqlalchemy pinning should be removed when Ibis 2.0 is released
 - sqlalchemy<1.4
 
+# geo
+- geopandas
+- gdal
+
 # dev
 - black
 - pip
