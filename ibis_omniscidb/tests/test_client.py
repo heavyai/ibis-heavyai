@@ -229,7 +229,7 @@ def test_read_csv(con, temp_table, filename, alltypes, df_alltypes):
 
     # prepare csv file inside omnisci docker container
     # if the file exists, then it will be overwritten
-    con._execute(
+    con.raw_sql(
         "COPY (SELECT * FROM functional_alltypes) TO '{}'".format(filename)
     )
 

@@ -173,6 +173,10 @@ class OmniSciDBDefaultCursor:
         """Exit when using `with` statement."""
         pass
 
+    def release():
+        """Releasing the cursor once it's not needed."""
+        pass
+
 
 class OmniSciDBGeoCursor(OmniSciDBDefaultCursor):
     """Cursor that exports result to GeoPandas Data Frame."""
