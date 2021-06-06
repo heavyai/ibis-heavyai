@@ -825,10 +825,12 @@ class OmniSciDBClient(SQLClient):
 
         return result
 
-    def ast_schema(self, query_ast, ipc, gpu_device):
+    def ast_schema(self, query_ast, ipc=None, gpu_device=None):
+        """Allow ipc and gpu_device params, used in OmniSciDB `execute`."""
         return super().ast_schema(query_ast)
 
     def fetch_from_cursor(self, cursor, schema):
+        """Fetch OmniSciDB cursor and return a dataframe."""
         result = cursor.to_df()
         # TODO: try to use `apply_to` for cudf.DataFrame using cudf 0.9
         if GPUDataFrame is None or not isinstance(result, GPUDataFrame):
