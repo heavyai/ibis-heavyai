@@ -173,7 +173,7 @@ class OmniSciDBDefaultCursor:
         """Exit when using `with` statement."""
         pass
 
-    def release():
+    def release(self):
         """Releasing the cursor once it's not needed."""
         pass
 
