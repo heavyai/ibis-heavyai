@@ -12,7 +12,7 @@ import pyarrow
 import pyomnisci
 import regex as re
 from ibis.backends.base.sql.compiler import DDL, DML
-from ibis.client import Database, DatabaseEntity, Query, SQLClient
+from ibis.client import Database, DatabaseEntity, SQLClient
 from ibis.util import log
 from omnisci._parsers import _extract_column_details
 from omnisci.cursor import Cursor
@@ -238,18 +238,6 @@ class OmniSciDBGPUCursor(OmniSciDBDefaultCursor):
         return self.cursor
 
 
-class OmniSciDBQuery(Query):
-    """DML query execution to enable queries, progress, cancellation etc."""
-
-    def _fetch(self, cursor):
-        result = cursor.to_df()
-        # TODO: try to use `apply_to` for cudf.DataFrame using cudf 0.9
-        if GPUDataFrame is None or not isinstance(result, GPUDataFrame):
-            return self.schema().apply_to(result)
-        else:
-            return result
-
-
 class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
     """References a physical table in the OmniSciDB metastore."""
 
@@ -352,7 +340,7 @@ class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
         query : OmniSciDBQuery
         """
         stmt = ddl.LoadData(self._qualified_name, df)
-        return self._execute(stmt)
+        return self._client.raw_sql(stmt)
 
     def read_csv(
         self,
@@ -361,7 +349,7 @@ class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
         quotechar: Optional[str] = '"',
         delimiter: Optional[str] = ',',
         threads: Optional[int] = None,
-    ) -> OmniSciDBQuery:
+    ):
         """
         Load data into an Omniscidb table from CSV file.
 
@@ -437,7 +425,7 @@ class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
             'threads': threads,
         }
         stmt = ddl.LoadData(self._qualified_name, path, **kwargs)
-        return self._execute(stmt)
+        return self._client.raw_sql(stmt)
 
     @property
     def name(self) -> str:
@@ -464,13 +452,10 @@ class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
         """
         statement = ddl.RenameTable(self._qualified_name, new_name)
 
-        self._client._execute(statement)
+        self._client.raw_sql(statement)
 
         op = self.op().change_name(statement.new_qualified_name)
         return type(self)(op)
-
-    def _execute(self, stmt):
-        return self._client._execute(stmt)
 
     def alter(self, tbl_properties=None):
         """
@@ -537,7 +522,7 @@ class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
             defaults=defaults,
             encodings=encodings,
         )
-        self._client._execute(statement, False)
+        self._client.raw_sql(statement)
 
     def drop_columns(self, column_names: list):
         """
@@ -556,14 +541,13 @@ class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
         >>> my_table.drop_columns(column_names)  # doctest: +SKIP
         """
         statement = ddl.DropColumns(self._qualified_name, column_names)
-        self._client._execute(statement, False)
+        self._client.raw_sql(statement)
 
 
 class OmniSciDBClient(SQLClient):
     """Client class for OmniSciDB backend."""
 
     database_class = Database
-    query_class = OmniSciDBQuery
     dialect = OmniSciDBDialect
     table_expr_class = OmniSciDBTable
 
@@ -720,12 +704,12 @@ class OmniSciDBClient(SQLClient):
         return [v[0] for v in tuples]
 
     def _get_schema_using_query(self, query):
-        with self._execute(query, results=True) as result:
-            # resets the state of the cursor and closes operation
-            result.cursor.fetchall()
-            names, ibis_types = self._adapt_types(
-                _extract_column_details(result.cursor._result.row_set.row_desc)
-            )
+        result = self.raw_sql(query)
+        # resets the state of the cursor and closes operation
+        result.cursor.fetchall()
+        names, ibis_types = self._adapt_types(
+            _extract_column_details(result.cursor._result.row_set.row_desc)
+        )
 
         return sch.Schema(names, ibis_types)
 
@@ -758,13 +742,9 @@ class OmniSciDBClient(SQLClient):
             database, table_name = table_name_
         return self.get_schema(table_name, database)
 
-    def _execute_query(self, query, **kwargs):
-        return query.execute(**kwargs)
-
-    def _execute(
+    def raw_sql(
         self,
         query: str,
-        results: bool = True,
         ipc: Optional[bool] = None,
         gpu_device: Optional[int] = None,
         **kwargs,
@@ -843,7 +823,14 @@ class OmniSciDBClient(SQLClient):
         except Exception as e:
             raise Exception('{}: {}'.format(e, query))
 
-        if results:
+        return result
+
+    def fetch_from_cursor(self, cursor, schema):
+        result = cursor.to_df()
+        # TODO: try to use `apply_to` for cudf.DataFrame using cudf 0.9
+        if GPUDataFrame is None or not isinstance(result, GPUDataFrame):
+            return schema.apply_to(result)
+        else:
             return result
 
     def create_database(self, name, owner=None):
@@ -856,7 +843,7 @@ class OmniSciDBClient(SQLClient):
           Database name
         """
         statement = ddl.CreateDatabase(name, owner=owner)
-        self._execute(statement)
+        self.raw_sql(statement)
 
     def describe_formatted(self, name: str) -> pd.DataFrame:
         """Describe a given table name.
@@ -921,7 +908,7 @@ class OmniSciDBClient(SQLClient):
                 'force=True'.format(name)
             )
         statement = ddl.DropDatabase(name)
-        self._execute(statement)
+        self.raw_sql(statement)
 
     def create_user(self, name, password, is_super=False):
         """
@@ -939,7 +926,7 @@ class OmniSciDBClient(SQLClient):
         statement = ddl.CreateUser(
             name=name, password=password, is_super=is_super
         )
-        self._execute(statement)
+        self.raw_sql(statement)
 
     def alter_user(
         self, name, password=None, is_super=None, insert_access=None
@@ -965,7 +952,7 @@ class OmniSciDBClient(SQLClient):
             is_super=is_super,
             insert_access=insert_access,
         )
-        self._execute(statement)
+        self.raw_sql(statement)
 
     def drop_user(self, name):
         """
@@ -977,7 +964,7 @@ class OmniSciDBClient(SQLClient):
           User name
         """
         statement = ddl.DropUser(name)
-        self._execute(statement)
+        self.raw_sql(statement)
 
     def create_view(self, name, expr, database=None):
         """
@@ -992,7 +979,7 @@ class OmniSciDBClient(SQLClient):
         ast = self._build_ast(expr, OmniSciDBDialect.make_context())
         select = ast.queries[0]
         statement = ddl.CreateView(name, select, database=database)
-        self._execute(statement)
+        self.raw_sql(statement)
 
     def drop_view(self, name, database=None, force: bool = False):
         """
@@ -1006,7 +993,7 @@ class OmniSciDBClient(SQLClient):
           Database may throw exception if table does not exist
         """
         statement = ddl.DropView(name, database=database, must_exist=not force)
-        self._execute(statement, False)
+        self.raw_sql(statement, False)
 
     def create_table(
         self,
@@ -1079,7 +1066,7 @@ class OmniSciDBClient(SQLClient):
         else:
             raise com.IbisError('Must pass expr or schema')
 
-        self._execute(statement, False)
+        self.raw_sql(statement)
         self.set_database(_database)
 
     def drop_table(self, table_name, database=None, force=False):
@@ -1105,7 +1092,7 @@ class OmniSciDBClient(SQLClient):
         statement = ddl.DropTable(
             table_name, database=database, must_exist=not force
         )
-        self._execute(statement, False)
+        self.raw_sql(statement)
         self.set_database(_database)
 
     def truncate_table(self, table_name, database=None):
@@ -1118,7 +1105,7 @@ class OmniSciDBClient(SQLClient):
         database : string, optional
         """
         statement = ddl.TruncateTable(table_name, database=database)
-        self._execute(statement, False)
+        self.execute(statement)
 
     def drop_table_or_view(
         self, name: str, database: str = None, force: bool = False
