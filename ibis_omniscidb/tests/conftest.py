@@ -161,11 +161,12 @@ def translate() -> typing.Callable:
     -------
     function
     """
-    from ..compiler import OmniSciDBDialect
+    from ..compiler import OmniSciDBCompiler
 
-    dialect = OmniSciDBDialect()
-    context = dialect.make_context()
-    return lambda expr: dialect.translator(expr, context).get_result()
+    context = OmniSciDBCompiler.make_context()
+    return lambda expr: (
+        OmniSciDBCompiler.translator(expr, context).get_result()
+    )
 
 
 def _random_identifier(suffix):

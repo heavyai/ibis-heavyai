@@ -12,7 +12,7 @@ import pyarrow
 import pyomnisci
 import regex as re
 from ibis.backends.base.sql.compiler import DDL, DML
-from ibis.client import Database, DatabaseEntity, SQLClient
+from ibis.base.sql.client import DatabaseEntity, SQLClient
 from ibis.util import log
 from omnisci._parsers import _extract_column_details
 from omnisci.cursor import Cursor
@@ -552,11 +552,10 @@ class OmniSciDBClient(SQLClient):
     """Client class for OmniSciDB backend."""
 
     compiler = OmniSciDBCompiler
-    database_class = Database
-    table_expr_class = OmniSciDBTable
 
     def __init__(
         self,
+        backend,
         uri: Optional[str] = None,
         user: Optional[str] = None,
         password: Optional[str] = None,
