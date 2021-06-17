@@ -20,7 +20,7 @@ from omnisci.dtypes import TDatumType as pyomnisci_dtype
 
 from . import ddl
 from . import dtypes as omniscidb_dtypes
-from .compiler import OmniSciDBDialect, build_ast
+from .compiler import OmniSciDBCompiler
 from .udf import OmniSciDBUDF
 
 try:
@@ -551,8 +551,8 @@ class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
 class OmniSciDBClient(SQLClient):
     """Client class for OmniSciDB backend."""
 
+    compiler = OmniSciDBCompiler
     database_class = Database
-    dialect = OmniSciDBDialect
     table_expr_class = OmniSciDBTable
 
     def __init__(
@@ -672,10 +672,6 @@ class OmniSciDBClient(SQLClient):
             col_type.nullable = col.nullable
             adapted_types.append(col_type)
         return names, adapted_types
-
-    def _build_ast(self, expr, context):
-        result = build_ast(expr, context)
-        return result
 
     def _check_execution_type(
         self, ipc: Optional[bool], gpu_device: Optional[int]
@@ -985,7 +981,7 @@ class OmniSciDBClient(SQLClient):
         expr : ibis TableExpr
         database : string, optional
         """
-        ast = self._build_ast(expr, OmniSciDBDialect.make_context())
+        ast = self.compiler.to_ast(expr)
         select = ast.queries[0]
         statement = ddl.CreateView(name, select, database=database)
         self.raw_sql(statement)
@@ -1059,7 +1055,7 @@ class OmniSciDBClient(SQLClient):
                 )
             else:
                 to_insert = obj
-            ast = self._build_ast(to_insert, OmniSciDBDialect.make_context())
+            ast = self.compiler.to_ast(to_insert)
             select = ast.queries[0]
 
             statement = ddl.CTAS(table_name, select, database=database)
