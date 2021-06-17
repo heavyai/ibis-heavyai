@@ -10,6 +10,8 @@ __all__ = ('Backend',)
 
 
 class Backend(BaseBackend):
+    """When the backend is loaded, this class becomes `ibis.omniscidb`."""
+
     name = 'clickhouse'
     kind = 'sql'
     client = OmniSciDBClient
