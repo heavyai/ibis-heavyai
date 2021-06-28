@@ -12,7 +12,7 @@ import pyarrow
 import pyomnisci
 import regex as re
 from ibis.backends.base.sql.compiler import DDL, DML
-from ibis.base.sql.client import DatabaseEntity, SQLClient
+from ibis.backends.base.sql.client import DatabaseEntity, SQLClient
 from ibis.util import log
 from omnisci._parsers import _extract_column_details
 from omnisci.cursor import Cursor
