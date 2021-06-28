@@ -592,6 +592,10 @@ class OmniSciDBClient(SQLClient):
         Exception
             if the given execution_type is not valid.
         """
+        self.backend = backend
+        self.database_class = backend.database_class
+        self.table_expr_class = backend.table_expr_class
+
         self.uri = uri
         self.user = user
         self.password = password
@@ -1159,6 +1163,7 @@ class OmniSciDBClient(SQLClient):
         else:
             client_class = type(self)
             new_client = client_class(
+                backend=self.backend,
                 uri=self.uri,
                 user=self.user,
                 password=self.password,
