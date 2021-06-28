@@ -276,7 +276,8 @@ class OmniSciDBCompiler(compiler.Compiler):
     select_class = OmniSciDBSelect
     union_class = None
 
-    def _make_union(self):
+    @staticmethod
+    def _make_union(union_class, expr, context):
         raise com.UnsupportedOperationError(
             "OmniSciDB backend doesn't support Union operation"
         )
