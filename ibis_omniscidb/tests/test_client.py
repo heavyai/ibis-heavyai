@@ -12,11 +12,6 @@ import pytest
 from ibis.tests.util import assert_equal
 from pytest import param
 
-import ibis_omniscidb
-
-# NOTE: TEMPORARY UNTIL IBIS 2.0 IS RELEASED
-ibis.omniscidb = ibis_omniscidb
-
 
 def test_table(alltypes):
     assert isinstance(alltypes, ir.TableExpr)
