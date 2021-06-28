@@ -8,7 +8,6 @@ import ibis.expr.operations as ops
 import ibis.expr.types as ir
 import ibis.util as util
 from ibis.backends.base.sql import compiler
-from ibis.backends.base_sql.compiler import BaseExprTranslator
 from ibis.expr.api import _add_methods, _binop_expr, _unary_op
 
 from . import operations as omniscidb_ops
@@ -163,7 +162,7 @@ class OmniSciDBExprTranslator(compiler.ExprTranslator):
     """OmniSciDB Expr Translator class."""
 
     _registry = omniscidb_ops._operation_registry
-    _rewrites = BaseExprTranslator._rewrites.copy()
+    _rewrites = compiler.ExprTranslator._rewrites.copy()
 
     def name(self, translated: str, name: str, force=True):
         """Define name for the expression.
