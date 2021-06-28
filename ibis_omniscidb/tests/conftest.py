@@ -7,11 +7,6 @@ import ibis.util as util
 import pandas
 import pytest
 
-import ibis_omniscidb
-
-# NOTE: TEMPORARY UNTIL IBIS 2.0 IS RELEASED
-ibis.omniscidb = ibis_omniscidb
-
 OMNISCIDB_HOST = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
 OMNISCIDB_PORT = int(os.environ.get('IBIS_TEST_OMNISCIDB_PORT', 6274))
 OMNISCIDB_USER = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
@@ -30,7 +25,7 @@ def con():
     -------
     ibis.omniscidb.OmniSciDBClient
     """
-    return ibis_omniscidb.connect(
+    return ibis.omniscidb.connect(
         protocol=OMNISCIDB_PROTOCOL,
         host=OMNISCIDB_HOST,
         port=OMNISCIDB_PORT,
