@@ -2,7 +2,7 @@
 from typing import Optional
 
 from ibis.backends.base import BaseBackend
-from ibis.backends.base.sql.client import Database
+from ibis.backends.base.client import Database
 
 from .client import OmniSciDBClient, OmniSciDBTable
 
