@@ -12,7 +12,7 @@ import pyarrow
 import pyomnisci
 import regex as re
 from ibis.backends.base.sql.compiler import DDL, DML
-from ibis.backends.base.sql.client import DatabaseEntity, SQLClient
+from ibis.backends.base.sql.client import SQLClient
 from ibis.util import log
 from omnisci._parsers import _extract_column_details
 from omnisci.cursor import Cursor
@@ -28,7 +28,7 @@ try:
 except (ImportError, OSError):
     GPUDataFrame = None
 
-# used to check if geopandas and shapely is available
+# used to check if geopandas and shapely are available
 FULL_GEO_SUPPORTED = False
 try:
     import geopandas
@@ -242,7 +242,7 @@ class OmniSciDBGPUCursor(OmniSciDBDefaultCursor):
         return self.cursor
 
 
-class OmniSciDBTable(ir.TableExpr, DatabaseEntity):
+class OmniSciDBTable(ir.TableExpr):
     """References a physical table in the OmniSciDB metastore."""
 
     @property
