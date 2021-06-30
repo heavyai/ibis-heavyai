@@ -5,12 +5,12 @@ from pathlib import Path
 from typing import Optional
 
 import ibis
+import ibis.expr.operations as ops
+import ibis.expr.types as ir
 import ibis.util as util
 import pandas
 import pytest
-
-import ibis.expr.operations as ops
-import ibis.expr.types as ir
+from ibis.backends import BaseBackend
 from ibis.backends.tests.base import BackendTest, RoundAwayFromZero
 
 OMNISCIDB_HOST = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
@@ -46,7 +46,7 @@ class TestConf(BackendTest, RoundAwayFromZero):
     )
 
     @staticmethod
-    def connect(data_directory: Path) -> ibis.client.Client:
+    def connect(data_directory: Path) -> BaseBackend:
         user = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
         password = os.environ.get(
             'IBIS_TEST_OMNISCIDB_PASSWORD', 'HyperInteractive'

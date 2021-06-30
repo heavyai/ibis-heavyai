@@ -1151,7 +1151,7 @@ class OmniSciDBClient(SQLClient):
         Returns
         -------
         db : Database
-            An :class:`ibis.client.Database` instance.
+            An :class:`ibis.backends.base.client.Database` instance.
 
         Notes
         -----
