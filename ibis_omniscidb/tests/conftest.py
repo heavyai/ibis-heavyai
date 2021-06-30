@@ -10,7 +10,7 @@ import ibis.expr.types as ir
 import ibis.util as util
 import pandas
 import pytest
-from ibis.backends import BaseBackend
+from ibis.backends.base import BaseBackend
 from ibis.backends.tests.base import BackendTest, RoundAwayFromZero
 
 OMNISCIDB_HOST = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
