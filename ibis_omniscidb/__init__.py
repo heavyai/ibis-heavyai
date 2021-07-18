@@ -12,9 +12,11 @@ __all__ = ('Backend',)
 class Backend(BaseBackend):
     """When the backend is loaded, this class becomes `ibis.omniscidb`."""
 
-    name = 'clickhouse'
-    kind = 'sql'
-    client = OmniSciDBClient
+    # TODO Subclass `BaseSQLBackend` instead of `BaseBackend, after this:
+    # https://github.com/ibis-project/ibis/pull/2864
+
+    name = 'omniscidb'
+    client_class = OmniSciDBClient
     database_class = Database
     table_expr_class = OmniSciDBTable
 
