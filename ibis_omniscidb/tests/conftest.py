@@ -24,6 +24,8 @@ OMNISCIDB_DB = os.environ.get('IBIS_TEST_DATA_DB', 'ibis_testing')
 
 
 class TestConf(BackendTest, RoundAwayFromZero):
+    """Backend-specific class with information for testing."""
+
     check_dtype = False
     check_names = False
     supports_window_operations = True
@@ -47,6 +49,7 @@ class TestConf(BackendTest, RoundAwayFromZero):
 
     @staticmethod
     def connect(data_directory: Path) -> BaseBackend:
+        """Connect to the test database."""
         user = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
         password = os.environ.get(
             'IBIS_TEST_OMNISCIDB_PASSWORD', 'HyperInteractive'
@@ -66,6 +69,9 @@ class TestConf(BackendTest, RoundAwayFromZero):
 
     @property
     def geo(self) -> Optional[ir.TableExpr]:
+        """Geo table."""
+        # TODO this is about to be implemented in the base class, remove here
+        # https://github.com/ibis-project/ibis/pull/2867
         return self.db.geo
 
 
