@@ -60,7 +60,7 @@ jobs:
 
     - name: run ibis tests
       run: PYTEST_BACKENDS="omniscidb" python -m pytest --pyargs ibis.backends.tests
-      if: true
+      if: always()
   lint:
     name: Lint
     runs-on: ubuntu-latest

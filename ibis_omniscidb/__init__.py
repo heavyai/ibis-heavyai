@@ -16,6 +16,7 @@ class Backend(BaseBackend):
     # https://github.com/ibis-project/ibis/pull/2864
 
     name = 'omniscidb'
+    kind = 'sql'  # TODO also remove with #2864
     client_class = OmniSciDBClient
     database_class = Database
     table_expr_class = OmniSciDBTable
