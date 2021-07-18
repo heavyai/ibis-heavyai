@@ -1,7 +1,6 @@
 """OmniSciDB test configuration module."""
 import os
 import typing
-from pathlib import Path
 from typing import Optional
 
 import ibis
@@ -48,7 +47,7 @@ class TestConf(BackendTest, RoundAwayFromZero):
     )
 
     @staticmethod
-    def connect(data_directory: Path) -> BaseBackend:
+    def connect() -> BaseBackend:
         """Connect to the test database."""
         user = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
         password = os.environ.get(
