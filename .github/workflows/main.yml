@@ -55,10 +55,10 @@ jobs:
     - name: setup tests
       run: python ci/setup_tests.py
 
-    - name: run tests
+    - name: run custom backend tests
       run: python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
 
-    - name: run ibis tests
+    - name: run ibis backend tests
       run: PYTEST_BACKENDS="omniscidb" python -m pytest --pyargs ibis.backends.tests
       if: always()
   lint:

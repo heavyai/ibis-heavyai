@@ -17,7 +17,7 @@ class Backend(BaseBackend):
 
     name = 'omniscidb'
     kind = 'sql'  # TODO also remove with #2864
-    client_class = OmniSciDBClient
+    client = OmniSciDBClient  # TODO rename to `client_class` with #2864
     database_class = Database
     table_expr_class = OmniSciDBTable
 
