@@ -19,7 +19,7 @@ setuptools.setup(
         'pyomnisci>=0.27.0',
         'pyomniscidb>=5.5.2',
         'pyarrow',
-        'rbc-project>=0.4.0',
+        'rbc-project>=0.4.0,<0.5',
         'sqlalchemy<1.4',  # TODO: it should be fixed by ibis 2.0
     ],
     setup_requires=['setuptools_scm'],
