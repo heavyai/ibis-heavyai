@@ -102,56 +102,9 @@ To run a subset of tests:
 ```
 ### Releasing
 
-For releasing, create a tag with the last commit from master and push it to the repository. It is recommended to use a clone directly from `omnisci` github organization. For example:
-
-```sh
-# outside of ibis-omnisci
-$ mkdir -p releases
-$ cd releases
-# if you don't have ssh configured for your github account
-# use https://github.com/omnisci/ibis-omniscidb.git
-$ git clone git@github.com:omnisci/ibis-omniscidb.git
-$ cd ibis-omniscidb
-```
-
-If you have already your `ibis-omniscidb` from `omnisci` github
-organization, just update your `master` branch:
-
-```sh
-git fetch --all
-git checkout master
-git pull --rebase
-```
-
-Create (or re-create) the `conda` environment for the releasing:
-
-```sh
-conda env create -n ibis-omniscidb-release --file environment-release.yaml --force
-```
-
-And, activate your environment:
-
-```sh
-conda activate ibis-omniscidb-release
-```
-
-Check the rever configuration:
-
-```sh
-rever check
-```
-
-Great! We are almost there! Now, visit the WEB page `https://github.com/omnisci/ibis-omniscidb/tags`
-and check the latest tag there. For example, if the latest version there is 0.1.0, maybe we want to create a version 0.1.1 or 0.2.0. In this example, we will create a version 0.1.1.
-
-```sh
-rever 0.1.1
-```
-
-And push the changes to github:
-
-```sh
-git push
-```
-
-Now, you should be able to see the new tag at `https://github.com/omnisci/ibis-omniscidb/tags`.
+To cut a new release, go 
+[GitHub Releases](https://github.com/Quansight/qadmin/releases/new) 
+Add the information for the new release and then click on 
+"Publish Release", it trigger a CI job that will cut a release at
+PyPI. When the package is released at PyPI, it will trigger a new
+release at conda-forge.

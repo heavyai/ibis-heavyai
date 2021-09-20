@@ -10,6 +10,7 @@ setuptools.setup(
     name='ibis-omniscidb',
     description='Ibis OmniSciDB backend',
     long_description=open(os.path.join(BASE_PATH, 'README.md')).read(),
+    long_description_content_type="text/markdown",
     url='https://github.com/omnisci/ibis-omniscidb',
     packages=setuptools.find_packages(),
     python_requires='>=3.7',
