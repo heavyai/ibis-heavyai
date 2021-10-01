@@ -2,11 +2,9 @@
 import os
 import typing
 from pathlib import Path
-from typing import Optional
 
 import ibis
 import ibis.expr.operations as ops
-import ibis.expr.types as ir
 import ibis.util as util
 import pandas
 import pytest
@@ -74,13 +72,6 @@ class TestConf(BackendTest, RoundAwayFromZero):
             password=password,
             database=database,
         )
-
-    @property
-    def geo(self) -> Optional[ir.TableExpr]:
-        """Geo table."""
-        # TODO this is about to be implemented in the base class, remove here
-        # https://github.com/ibis-project/ibis/pull/2867
-        return self.db.geo
 
 
 @pytest.fixture(scope='module')
