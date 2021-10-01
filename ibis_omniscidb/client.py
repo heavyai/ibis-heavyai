@@ -167,6 +167,12 @@ class OmniSciDBGPUCursor(OmniSciDBDefaultCursor):
 
 
 def get_cursor_class(use_gpu: bool):
+    """Return a cursor of the appropriate type.
+
+    If `use_gpu` is True, the cursor will be a GPU compatible
+    cursor. Otherwise, if geo dependencies are installed a
+    geo compatible cursor, or if not, a default cursor.
+    """
     if use_gpu:
         return OmniSciDBGPUCursor
 

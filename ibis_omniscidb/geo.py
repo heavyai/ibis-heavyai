@@ -1,3 +1,12 @@
+"""
+Module with geospatial specific functionality.
+
+Everything that depends on geopandas, shapely or other
+geospatial libraries should go here. When this module
+is imported, it should be checked if an `ImportError` is
+raised, and assume no geospatial support can be provided
+because the lack of the soft dependencies.
+"""
 import geopandas
 import pandas as pd
 import shapely.wkt
