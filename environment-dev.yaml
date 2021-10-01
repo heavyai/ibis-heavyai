@@ -6,12 +6,12 @@ channels:
 dependencies:
 
 # core
+- numba <0.54
 - pandas
-- pyomnisci>=0.27.0
-- pyomniscidb>=5.5.2
+- pyomnisci >=0.27.0
+- pyomniscidb >=5.5.2
 - pyarrow
-- numpy
-- rbc>=0.4.0
+- rbc >=0.4.0
 - python 3.8.*
 - sqlalchemy
 
