@@ -29,6 +29,8 @@ class TestConf(BackendTest, RoundAwayFromZero):
     supports_window_operations = True
     supports_divide_by_zero = False
     supports_floating_modulus = False
+    supports_arrays = False
+    supports_arrays_outside_of_select = False
     returned_timestamp_unit = 's'
     # Exception: Non-empty LogicalValues not supported yet
     additional_skipped_operations = frozenset(
