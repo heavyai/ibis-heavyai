@@ -680,21 +680,6 @@ class Backend(BaseSQLBackend):
         pattern = re.compile(like)
         return list(filter(lambda t: pattern.findall(t), dbs))
 
-    def exists_table(self, name: str, database: str = None):
-        """
-        Determine if the indicated table or view exists.
-
-        Parameters
-        ----------
-        name : string
-        database : string, default None
-
-        Returns
-        -------
-        if_exists : boolean
-        """
-        return name in self.list_tables(database=database)
-
     def list_tables(self, like: str = None, database: str = None) -> list:
         """List all tables inside given or current database.
 
