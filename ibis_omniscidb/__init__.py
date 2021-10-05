@@ -36,7 +36,6 @@ class Backend(BaseSQLBackend):
     database_class = Database
     table_expr_class = OmniSciDBTable
     compiler = OmniSciDBCompiler
-    client_class = None  # TODO remove when removed from the base class
 
     def __del__(self):
         """Close the connection when instance is deleted."""
