@@ -244,7 +244,7 @@ def temp_table(con) -> typing.Generator[str, None, None]:
     try:
         yield name
     finally:
-        assert con.exists_table(name), name
+        assert name in con.list_tables()
         con.drop_table(name)
 
 

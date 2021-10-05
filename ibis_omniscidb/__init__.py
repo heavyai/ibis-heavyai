@@ -277,7 +277,7 @@ class Backend(BaseSQLBackend):
         try:
             result = cursor(execute(query, **params))
         except Exception as e:
-            e.args = f'{e.args[0]}\n\n{query}',
+            e.args = (f'{e.args[0]}\n\n{query}',)
             raise e
 
         return result

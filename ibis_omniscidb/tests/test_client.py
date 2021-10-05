@@ -51,13 +51,14 @@ def test_session_id_connection(session_con):
     assert new_connection.list_tables()
 
 
-def test_compile_verify(alltypes):
+def test_compile(alltypes):
     supported_expr = alltypes.double_col.sum()
-    assert supported_expr.verify()
+    assert supported_expr.compile()
 
 
 def test_database_layer(con, alltypes):
-    db = con.database()
+    with pytest.warns(FutureWarning):
+        db = con.database()
     t = db.functional_alltypes
 
     assert_equal(t, alltypes)
@@ -71,18 +72,6 @@ def test_compile_toplevel():
     result = ibis.omniscidb.compile(expr)
     expected = 'SELECT sum("foo") AS "sum"\nFROM t0'  # noqa
     assert str(result) == expected
-
-
-def test_exists_table_with_database(
-    con, alltypes, test_data_db, temp_table, temp_database
-):
-    tmp_db = test_data_db
-    con.create_table(temp_table, alltypes, database=tmp_db)
-
-    assert con.exists_table(temp_table, database=tmp_db)
-    assert not con.exists_table(temp_table, database=temp_database)
-    # check it does exact match rather than partial
-    assert not con.exists_table(temp_table[:-2], database=tmp_db)
 
 
 def test_union_op(alltypes):
@@ -228,7 +217,8 @@ def test_read_csv(con, temp_table, filename, alltypes, df_alltypes):
         "COPY (SELECT * FROM functional_alltypes) TO '{}'".format(filename)
     )
 
-    db = con.database()
+    with pytest.warns(FutureWarning):
+        db = con.database()
     table = db.table(temp_table)
     table.read_csv(filename, header=False, quotechar='"', delimiter=",")
     df_read_csv = table.execute()
@@ -332,7 +322,8 @@ def test_load_data(con, temp_table, method, format):
 def test_current_database(con):
     assert 'ibis_testing' == con.current_database
 
-    db = con.database('omnisci')
+    with pytest.warns(FutureWarning):
+        db = con.database('omnisci')
     assert 'omnisci' == db.name
 
     assert 'ibis_testing' == con.current_database
