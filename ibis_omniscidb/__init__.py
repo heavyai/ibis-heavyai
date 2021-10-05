@@ -9,7 +9,7 @@ import pandas as pd
 import pyarrow
 import pyomnisci
 import regex as re
-from ibis.backends.base.client import Database
+from ibis.backends.base import Database
 from ibis.backends.base.sql import BaseSQLBackend
 from ibis.backends.base.sql.compiler import DDL, DML
 from omnisci._parsers import _extract_column_details

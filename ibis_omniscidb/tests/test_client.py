@@ -334,7 +334,6 @@ def test_current_database(con):
 
     db = con.database('omnisci')
     assert 'omnisci' == db.name
-    assert 'omnisci' == db.client.current_database
 
     assert 'ibis_testing' == con.current_database
     con.db_name = 'nonesuch'
