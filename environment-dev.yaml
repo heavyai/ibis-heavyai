@@ -6,7 +6,7 @@ channels:
 dependencies:
 
 # core
-- numba <0.54
+- numba
 - pandas
 - pyomnisci >=0.27.0
 - pyomniscidb >=5.5.2

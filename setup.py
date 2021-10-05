@@ -16,7 +16,7 @@ setuptools.setup(
     python_requires='>=3.7',
     install_requires=[
         'ibis-framework',  # TODO: require ibis 2.0 when it's released
-        'numba<0.54',
+        'numba',
         'pandas',
         'pyomnisci>=0.27.0',
         'pyomniscidb>=5.5.2',
