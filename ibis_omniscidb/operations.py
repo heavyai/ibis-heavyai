@@ -1123,7 +1123,7 @@ _window_ops = {
 # UDF
 _udf_ops = {
     ops.ElementWiseVectorizedUDF: _udf,
-    ops.ReductionVectorizedUDF: _udf,
+    # ops.ReductionVectorizedUDF: _udf,
     ops.AnalyticVectorizedUDF: _udf,
 }
 
