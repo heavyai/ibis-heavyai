@@ -187,6 +187,12 @@ rewrites = OmniSciDBExprTranslator.rewrites
 omniscidb_reg = omniscidb_ops._operation_registry
 
 
+@rewrites(ops.FloorDivide)
+def _floor_divide(expr):
+    left, right = expr.op().args
+    return left.div(right).floor()
+
+
 @rewrites(ops.All)
 def omniscidb_rewrite_all(expr: ibis.Expr) -> ibis.Expr:
     """Rewrite All operation.
