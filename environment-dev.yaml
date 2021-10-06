@@ -1,23 +1,23 @@
 name: ibis-omniscidb-dev
 channels:
+- nodefaults
 - conda-forge
 
 dependencies:
 
 # core
-- ibis-framework  # TODO: require Ibis 2.0 when it's released
 - numba
 - pandas
 - pyomnisci >=0.27.0
 - pyomniscidb >=5.5.2
 - pyarrow
 - rbc >=0.4.0
-# ibis 1.4 for python 3.7 installs pymapd, and ibis-omniscidb
-# doens't use pymapd anymore
 - python 3.8.*
+- sqlalchemy
 
-# TODO: sqlalchemy pinning should be removed when Ibis 2.0 is released
-- sqlalchemy <1.4
+# geo
+- geopandas
+- gdal
 
 # dev
 - black

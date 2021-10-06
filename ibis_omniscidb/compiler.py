@@ -7,8 +7,7 @@ import ibis.common.exceptions as com
 import ibis.expr.operations as ops
 import ibis.expr.types as ir
 import ibis.util as util
-from ibis.backends.base_sql.compiler import BaseExprTranslator
-from ibis.backends.base_sqlalchemy import compiler
+from ibis.backends.base.sql import compiler
 from ibis.expr.api import _add_methods, _binop_expr, _unary_op
 
 from . import operations as omniscidb_ops
@@ -16,80 +15,11 @@ from .identifiers import quote_identifier  # noqa: F401
 from .operations import _type_to_sql_string  # noqa: F401
 
 
-def build_ast(
-    expr: ibis.Expr,
-    context: compiler.QueryContext,
-) -> compiler.QueryAST:
-    """Build AST from given expression.
-
-    Parameters
-    ----------
-    expr : ibis.Expr
-    context : compiler.QueryContext
-
-    Returns
-    -------
-    compiler.QueryAST
-    """
-    assert context is not None, 'context is None'
-    builder = OmniSciDBQueryBuilder(expr, context=context)
-    return builder.get_result()
-
-
-def _get_query(
-    expr: ibis.Expr,
-    context: compiler.QueryContext,
-):
-    assert context is not None, 'context is None'
-    ast = build_ast(expr, context)
-    query = ast.queries[0]
-
-    return query
-
-
-def to_sql(
-    expr: ibis.Expr,
-    context: compiler.QueryContext = None,
-) -> str:
-    """Convert expression to SQL statement.
-
-    Parameters
-    ----------
-    expr : ibis.Expr
-    context : compiler.QueryContext, optional
-
-    Returns
-    -------
-    str
-    """
-    if context is None:
-        context = OmniSciDBDialect.make_context()
-    assert context is not None, 'context is None'
-    query = _get_query(expr, context)
-    return query.compile()
-
-
 class OmniSciDBSelectBuilder(compiler.SelectBuilder):
     """OmniSciDB Select Builder class."""
 
-    @property
-    def _select_class(self):
-        return OmniSciDBSelect
-
     def _convert_group_by(self, exprs):
         return exprs
-
-
-class OmniSciDBQueryBuilder(compiler.QueryBuilder):
-    """OmniSciDB Query Builder class."""
-
-    select_builder = OmniSciDBSelectBuilder
-    union_class = None
-
-    def _make_union(self):
-        raise com.UnsupportedOperationError(
-            "OmniSciDB backend doesn't support Union operation"
-        )
 
 
 class OmniSciDBQueryContext(compiler.QueryContext):
@@ -97,42 +27,9 @@ class OmniSciDBQueryContext(compiler.QueryContext):
 
     always_alias = False
 
-    def _to_sql(self, expr, ctx):
-        ctx.always_alias = False
-        return to_sql(expr, context=ctx)
-
 
 class OmniSciDBSelect(compiler.Select):
     """OmniSciDB Select class."""
-
-    @property
-    def translator(self):
-        """Return the translator class.
-
-        Returns
-        -------
-        OmniSciDBExprTranslator
-        """
-        return OmniSciDBExprTranslator
-
-    @property
-    def table_set_formatter(self):
-        """Return the Table Set Formatter.
-
-        Returns
-        -------
-        OmniSciDBTableSetFormatter
-        """
-        return OmniSciDBTableSetFormatter
-
-    def format_select_set(self) -> str:
-        """Format the select clause.
-
-        Returns
-        -------
-        string
-        """
-        return super().format_select_set()
 
     def format_group_by(self) -> typing.Optional[str]:
         """Format the group by clause.
@@ -265,9 +162,7 @@ class OmniSciDBExprTranslator(compiler.ExprTranslator):
     """OmniSciDB Expr Translator class."""
 
     _registry = omniscidb_ops._operation_registry
-    _rewrites = BaseExprTranslator._rewrites.copy()
-
-    context_class = OmniSciDBQueryContext
+    _rewrites = compiler.ExprTranslator._rewrites.copy()
 
     def name(self, translated: str, name: str, force=True):
         """Define name for the expression.
@@ -287,17 +182,15 @@ class OmniSciDBExprTranslator(compiler.ExprTranslator):
         return omniscidb_ops._name_expr(translated, name)
 
 
-class OmniSciDBDialect(compiler.Dialect):
-    """OmniSciDB Dialect class."""
-
-    translator = OmniSciDBExprTranslator
-
-
-dialect = OmniSciDBDialect
-compiles = OmniSciDBExprTranslator.compiles
 rewrites = OmniSciDBExprTranslator.rewrites
 
 omniscidb_reg = omniscidb_ops._operation_registry
+
+
+@rewrites(ops.FloorDivide)
+def _floor_divide(expr):
+    left, right = expr.op().args
+    return left.div(right).floor()
 
 
 @rewrites(ops.All)
@@ -377,3 +270,20 @@ _add_methods(
     ir.StringValue,
     {'byte_length': _unary_op('length', omniscidb_ops.ByteLength)},
 )
+
+
+class OmniSciDBCompiler(compiler.Compiler):
+    """OmniSciDB Query Builder class."""
+
+    translator_class = OmniSciDBExprTranslator
+    select_builder_class = OmniSciDBSelectBuilder
+    context_class = OmniSciDBQueryContext
+    table_set_formatter_class = OmniSciDBTableSetFormatter
+    select_class = OmniSciDBSelect
+    union_class = None
+
+    @staticmethod
+    def _make_union(union_class, expr, context):
+        raise com.UnsupportedOperationError(
+            "OmniSciDB backend doesn't support Union operation"
+        )

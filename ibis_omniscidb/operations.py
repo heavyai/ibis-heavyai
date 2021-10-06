@@ -1,4 +1,5 @@
 """OmniSciDB operations module."""
+import math
 import warnings
 from datetime import date, datetime
 from io import StringIO
@@ -13,7 +14,7 @@ import ibis.expr.rules as rlz
 import ibis.expr.types as ir
 import ibis.util as util
 from ibis import literal as L
-from ibis.backends.base_sql import (
+from ibis.backends.base.sql.registry import (
     cumulative_to_window,
     format_window,
     operation_registry,
@@ -582,6 +583,8 @@ def literal(translator, expr: ibis.expr.operations.Literal) -> str:
     elif isinstance(expr, ir.StringValue):
         return "'{0!s}'".format(value.replace("'", "\\'"))
     elif isinstance(expr, ir.NumericValue):
+        if math.isnan(value):
+            return 'NULL'
         return repr(value)
     elif isinstance(expr, ir.SetScalar):
         return _set_literal_format(translator, expr)
@@ -1123,7 +1126,7 @@ _window_ops = {
 # UDF
 _udf_ops = {
     ops.ElementWiseVectorizedUDF: _udf,
-    ops.ReductionVectorizedUDF: _udf,
+    # ops.ReductionVectorizedUDF: _udf,
     ops.AnalyticVectorizedUDF: _udf,
 }
 
@@ -1165,7 +1168,10 @@ _unsupported_ops = [
     ops.RegexExtract,
     ops.RegexReplace,
     ops.ParseURL,
+    ops.StartsWith,
+    ops.EndsWith,
     # Numeric
+    ops.FloorDivide,
     ops.Least,
     ops.Greatest,
     ops.Log2,

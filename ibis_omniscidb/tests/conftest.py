@@ -1,16 +1,15 @@
 """OmniSciDB test configuration module."""
 import os
 import typing
+from pathlib import Path
 
 import ibis
+import ibis.expr.operations as ops
 import ibis.util as util
 import pandas
 import pytest
-
-import ibis_omniscidb
-
-# NOTE: TEMPORARY UNTIL IBIS 2.0 IS RELEASED
-ibis.omniscidb = ibis_omniscidb
+from ibis.backends.base import BaseBackend
+from ibis.backends.tests.base import BackendTest, RoundAwayFromZero
 
 OMNISCIDB_HOST = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
 OMNISCIDB_PORT = int(os.environ.get('IBIS_TEST_OMNISCIDB_PORT', 6274))
@@ -22,6 +21,61 @@ OMNISCIDB_PROTOCOL = os.environ.get('IBIS_TEST_OMNISCIDB_PROTOCOL', 'binary')
 OMNISCIDB_DB = os.environ.get('IBIS_TEST_DATA_DB', 'ibis_testing')
 
 
+class TestConf(BackendTest, RoundAwayFromZero):
+    """Backend-specific class with information for testing."""
+
+    check_dtype = False
+    check_names = False
+    supports_window_operations = True
+    supports_divide_by_zero = False
+    supports_floating_modulus = False
+    supports_arrays = False
+    supports_arrays_outside_of_select = False
+    returned_timestamp_unit = 's'
+    # Exception: Non-empty LogicalValues not supported yet
+    additional_skipped_operations = frozenset(
+        {
+            ops.Abs,
+            ops.Ceil,
+            ops.Floor,
+            ops.Exp,
+            ops.Sign,
+            ops.Sqrt,
+            ops.Ln,
+            ops.Log10,
+            ops.Modulus,
+        }
+    )
+
+    def name(self):
+        """Name of the backend.
+
+        In the parent class, this is automatically obtained from the name of
+        the module, which is not the case for third-party backends.
+        """
+        return 'omniscidb'
+
+    @staticmethod
+    def connect(data_directory: Path) -> BaseBackend:
+        """Connect to the test database."""
+        user = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
+        password = os.environ.get(
+            'IBIS_TEST_OMNISCIDB_PASSWORD', 'HyperInteractive'
+        )
+        host = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
+        port = os.environ.get('IBIS_TEST_OMNISCIDB_PORT', '6274')
+        database = os.environ.get(
+            'IBIS_TEST_OMNISCIDB_DATABASE', 'ibis_testing'
+        )
+        return ibis.omniscidb.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database,
+        )
+
+
 @pytest.fixture(scope='module')
 def con():
     """Define a connection fixture.
@@ -30,7 +84,7 @@ def con():
     -------
     ibis.omniscidb.OmniSciDBClient
     """
-    return ibis_omniscidb.connect(
+    return ibis.omniscidb.connect(
         protocol=OMNISCIDB_PROTOCOL,
         host=OMNISCIDB_HOST,
         port=OMNISCIDB_PORT,
@@ -161,11 +215,12 @@ def translate() -> typing.Callable:
     -------
     function
     """
-    from ..compiler import OmniSciDBDialect
+    from ..compiler import OmniSciDBCompiler
 
-    dialect = OmniSciDBDialect()
-    context = dialect.make_context()
-    return lambda expr: dialect.translator(expr, context).get_result()
+    context = OmniSciDBCompiler.make_context()
+    return lambda expr: (
+        OmniSciDBCompiler.translator(expr, context).get_result()
+    )
 
 
 def _random_identifier(suffix):
@@ -189,7 +244,7 @@ def temp_table(con) -> typing.Generator[str, None, None]:
     try:
         yield name
     finally:
-        assert con.exists_table(name), name
+        assert name in con.list_tables()
         con.drop_table(name)
 
 

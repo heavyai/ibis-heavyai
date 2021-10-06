@@ -37,4 +37,5 @@ setuptools.setup(
     license='Apache Software License',
     maintainer='OmniSci',
     maintainer_email='community@omnisci.com',
+    entry_points={'ibis.backends': ['omniscidb = ibis_omniscidb']},
 )

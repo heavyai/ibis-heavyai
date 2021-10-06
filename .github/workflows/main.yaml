@@ -46,6 +46,7 @@ jobs:
         if [[ "${{ matrix.pyomnisci-version }}" == "dev" ]]; then
           pip install --no-deps git+https://github.com/omnisci/pyomnisci.git
         fi
+        python -m pip install git+https://github.com/ibis-project/ibis.git 
         python -m pip install --no-deps -e .
 
     - name: show environment
@@ -54,9 +55,12 @@ jobs:
     - name: setup tests
       run: python ci/setup_tests.py
 
-    - name: run tests
+    - name: run custom backend tests
       run: python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
 
+    - name: run ibis backend tests
+      run: PYTEST_BACKENDS="omniscidb" python -m pytest --pyargs ibis.backends.tests
+      if: always()
   lint:
     name: Lint
     runs-on: ubuntu-latest
