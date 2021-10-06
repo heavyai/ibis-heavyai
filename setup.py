@@ -13,16 +13,16 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url='https://github.com/omnisci/ibis-omniscidb',
     packages=setuptools.find_packages(),
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     install_requires=[
-        'ibis-framework',  # TODO: require ibis 2.0 when it's released
+        'ibis-framework>=2.0',
         'numba',
         'pandas',
         'pyomnisci>=0.27.0',
         'pyomniscidb>=5.5.2',
         'pyarrow',
         'rbc-project>=0.4.0',
-        'sqlalchemy<1.4',  # TODO: it should be fixed by ibis 2.0
+        'sqlalchemy',
     ],
     setup_requires=['setuptools_scm'],
     use_scm_version=True,
