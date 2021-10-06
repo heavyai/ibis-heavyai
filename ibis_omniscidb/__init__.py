@@ -1,4 +1,6 @@
 """OmniSciDB backend."""
+from __future__ import annotations
+
 from typing import Optional, Union
 
 import ibis.common.exceptions as com
@@ -36,6 +38,8 @@ class Backend(BaseSQLBackend):
     database_class = Database
     table_expr_class = OmniSciDBTable
     compiler = OmniSciDBCompiler
+    db_name: str | None
+    con: pyomnisci.Connection
 
     def __del__(self):
         """Close the connection when instance is deleted."""
@@ -104,8 +108,15 @@ class Backend(BaseSQLBackend):
 
         if session_id:
             kwargs = {'sessionid': session_id}
-        else:
+        elif (
+            user is not None and password is not None and database is not None
+        ):
             kwargs = {'user': user, 'password': password, 'dbname': database}
+        else:
+            raise ValueError(
+                'If `session_id` is not provided, then `user`, '
+                '`password` and `database` must be provided.'
+            )
 
         new_backend.con = pyomnisci.connect(
             uri=uri, host=host, port=port, protocol=protocol, **kwargs
