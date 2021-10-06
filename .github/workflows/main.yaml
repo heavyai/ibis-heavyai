@@ -44,9 +44,12 @@ jobs:
     - name: install dependencies
       run: |
         if [[ "${{ matrix.pyomnisci-version }}" == "dev" ]]; then
-          pip install --no-deps git+https://github.com/omnisci/pyomnisci.git
+          python -m pip install --no-deps git+https://github.com/omnisci/pyomnisci.git
+          python -m pip install git+https://github.com/ibis-project/ibis.git
+        else
+          conda install python=3.8
+          python -m pip install ibis-framework=2.0
         fi
-        python -m pip install git+https://github.com/ibis-project/ibis.git 
         python -m pip install --no-deps -e .
 
     - name: show environment
