@@ -12,7 +12,6 @@ dependencies:
 - pyomniscidb >=5.5.2
 - pyarrow
 - rbc >=0.4.0
-- python 3.8.*
 - sqlalchemy
 
 # geo
