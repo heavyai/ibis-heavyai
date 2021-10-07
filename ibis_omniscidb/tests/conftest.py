@@ -20,6 +20,10 @@ OMNISCIDB_PASS = os.environ.get(
 OMNISCIDB_PROTOCOL = os.environ.get('IBIS_TEST_OMNISCIDB_PROTOCOL', 'binary')
 OMNISCIDB_DB = os.environ.get('IBIS_TEST_DATA_DB', 'ibis_testing')
 
+URI_USER = f'{OMNISCIDB_USER}:{OMNISCIDB_PASS}'
+URI_HOST = f'{OMNISCIDB_HOST}:{OMNISCIDB_PORT}'
+URI = f'omniscidb://{URI_USER}@{URI_HOST}/{OMNISCIDB_DB}'
+
 
 class TestConf(BackendTest, RoundAwayFromZero):
     """Backend-specific class with information for testing."""

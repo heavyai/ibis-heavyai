@@ -12,6 +12,19 @@ import pytest
 from ibis.tests.util import assert_equal
 from pytest import param
 
+import ibis_omniscidb
+
+from . import conftest
+
+
+def test_connect_with_uri(con):
+    con.connect(uri=conftest.URI)
+
+
+def test_legacy_connect_warns():
+    with pytest.warns(FutureWarning):
+        ibis_omniscidb.connect(conftest.URI)
+
 
 def test_table(alltypes):
     assert isinstance(alltypes, ir.TableExpr)
