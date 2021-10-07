@@ -1,6 +1,7 @@
 """OmniSciDB backend."""
 from __future__ import annotations
 
+import warnings
 from typing import Optional, Union
 
 import ibis.common.exceptions as com
@@ -108,7 +109,7 @@ class Backend(BaseSQLBackend):
 
         if session_id:
             kwargs = {'sessionid': session_id}
-        elif (
+        elif uri is not None or (
             user is not None and password is not None and database is not None
         ):
             kwargs = {'user': user, 'password': password, 'dbname': database}
@@ -771,3 +772,34 @@ class Backend(BaseSQLBackend):
             Version of the backend library.
         """
         return pyomnisci.__version__
+
+
+def connect(
+    uri: Optional[str] = None,
+    user: Optional[str] = None,
+    password: Optional[str] = None,
+    host: Optional[str] = None,
+    port: Optional[int] = 6274,
+    database: Optional[str] = None,
+    protocol: str = 'binary',
+    session_id: Optional[str] = None,
+    ipc: Optional[bool] = None,
+    gpu_device: Optional[int] = None,
+):
+    warnings.warn(
+        '`ibis_omniscidb.connect(...)` is deprecated and will be removed in '
+        'a future version. Use `ibis.omniscidb.connect(...)` instead.',
+        FutureWarning,
+    )
+    return Backend().connect(
+        uri,
+        user,
+        password,
+        host,
+        port,
+        database,
+        protocol,
+        session_id,
+        ipc,
+        gpu_device,
+    )
