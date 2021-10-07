@@ -117,8 +117,8 @@ class Backend(BaseSQLBackend):
             kwargs = {'user': user, 'password': password, 'dbname': database}
         else:
             raise ValueError(
-                'If `session_id` is not provided, then `user`, '
-                '`password` and `database` must be provided.'
+                'If `session_id` is not provided, then the connection `uri` '
+                'or all `user`, `password` and `database` must be provided.'
             )
 
         new_backend.con = pyomnisci.connect(
