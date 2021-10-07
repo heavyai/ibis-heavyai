@@ -109,7 +109,9 @@ class Backend(BaseSQLBackend):
 
         if session_id:
             kwargs = {'sessionid': session_id}
-        elif uri is not None or (
+        elif uri is not None:
+            kwargs = {}
+        elif (
             user is not None and password is not None and database is not None
         ):
             kwargs = {'user': user, 'password': password, 'dbname': database}
