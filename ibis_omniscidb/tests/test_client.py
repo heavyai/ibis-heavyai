@@ -347,3 +347,7 @@ def test_current_database(con):
 def test_list_databases(con):
     assert 'ibis_testing' in con.list_databases()
     assert 'ibis_testing' in con.list_databases(like='ibis.*')
+
+
+def test_version():
+    assert ibis_omniscidb.__version__

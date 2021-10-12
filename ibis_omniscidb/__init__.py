@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import warnings
+from importlib.metadata import PackageNotFoundError, version
 from typing import Optional, Union
 
 import ibis.common.exceptions as com
@@ -25,11 +26,17 @@ from .compiler import OmniSciDBCompiler
 from .udf import OmniSciDBUDF
 
 try:
+    __version__ = version("ibis_omniscidb")
+except PackageNotFoundError:
+    __version__ = ""
+
+
+try:
     from cudf import DataFrame as GPUDataFrame
 except (ImportError, OSError):
     GPUDataFrame = None
 
-__all__ = ('Backend',)
+__all__ = ('Backend', "__version__")
 
 
 class Backend(BaseSQLBackend):
