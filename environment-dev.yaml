@@ -20,7 +20,7 @@ dependencies:
 
 # dev
 - black
-- pip
+- pip <21.3
 - pre-commit
 - pytest
 - pytest-cov
