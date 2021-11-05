@@ -17,7 +17,7 @@ Install dependencies for Ibis's omniscidb dialect:
 
 ::
 
-  pip install ibis-framework[omniscidb]
+  pip install ibis-omniscidb
 
 Create a client by passing in database connection parameters such as ``host``,
 ``port``, ``database``,  ``user`` and ``password`` to
@@ -103,7 +103,7 @@ the follow code into `ibis.__init__`:
 .. code-block:: python
 
     with suppress(ImportError):
-        # pip install ibis-framework[omniscidb]
+        # pip install ibis-omniscidb
         from ibis.backends import omniscidb
 
 There are three functions in the `api` module:
