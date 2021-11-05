@@ -18,7 +18,6 @@ setuptools.setup(
         'ibis-framework>=2.0',
         'pandas',
         'pyomnisci>=0.28.1',
-        'pyomniscidb>=5.5.2',
         'pyarrow',
         'rbc-project>=0.4.0',
     ],
