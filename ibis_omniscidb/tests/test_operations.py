@@ -1,7 +1,6 @@
 import re
 
 import ibis
-import numpy as np
 import pandas as pd
 import pytest
 from pytest import param
@@ -12,29 +11,32 @@ from pytest import param
     [
         param(
             lambda t: t[t, ibis.literal(1).degrees().name('n')].limit(1)['n'],
-            57.2957795130823,
+            pd.Series([57.2957795130823]),
             id='literal_degree',
         ),
         param(
             lambda t: t[t, ibis.literal(1).radians().name('n')].limit(1)['n'],
-            0.0174532925199433,
+            pd.Series([0.0174532925199433]),
             id='literal_radians',
         ),
         param(
             lambda t: t.double_col.corr(t.float_col),
-            1.000000000000113,
+            pd.Series([1.000000000000113]),
             id='double_float_correlation',
         ),
         param(
             lambda t: t.double_col.cov(t.float_col),
-            91.67005567565313,
+            pd.Series([91.67005567565313]),
             id='double_float_covariance',
         ),
     ],
 )
 def test_operations_scalar(alltypes, result_fn, expected):
     result = result_fn(alltypes).execute()
-    np.testing.assert_allclose(result, expected)
+    if not isinstance(result, pd.Series):
+        result = pd.Series([result])
+
+    pd.testing.assert_series_equal(result, expected, check_names=False)
 
 
 @pytest.mark.parametrize(
@@ -130,7 +132,7 @@ def test_arbitrary_none(alltypes, df_alltypes, result_fn, expected_fn):
     expr = result_fn(alltypes)
     result = expr.execute()
     expected = expected_fn(df_alltypes)
-    np.testing.assert_allclose(result, expected)
+    pd.testing.assert_series_equal(pd.Series([result]), pd.Series([expected]))
 
 
 @pytest.mark.parametrize(
