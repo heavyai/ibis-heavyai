@@ -1,4 +1,4 @@
-name: ibis-omniscidb-dev
+name: ibis-omniscidb
 channels:
 - nodefaults
 - conda-forge
@@ -6,10 +6,10 @@ channels:
 dependencies:
 
 # core
+- python
 - ibis-framework-core >=2
 - pandas
 - pyomnisci >=0.28.1
-- pyomniscidb >=5.5.2
 - pyarrow
 - rbc >=0.4.0
 

@@ -1,12 +1,7 @@
 # core
 pandas
-pyomnisci>=0.27.0
-pyomniscidb>=5.5.2
+pyomnisci>=0.28.1
 pyarrow
-# numpy 1.20 has conflicts with pandas and pyarrow
-# pyarrow.lib.ArrowTypeError: ('Did not pass numpy.dtype object',
-#   'Conversion failed for column salary with type float64')
-numpy<1.20
 rbc-project>=0.4.0
 
 # dev

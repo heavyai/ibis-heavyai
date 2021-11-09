@@ -57,7 +57,7 @@ $ git clone git@github.com:your_name_here/ibis-omniscidb.git
 3. Install your local copy into a virtual environment. Assuming want to use conda environment,
    this is how you set up your fork for local development:
 ```sh
-    $ conda env create -n ibis-omniscidb-dev --file environment-dev.yml
+    $ conda env create -n ibis-omniscidb --file environment-dev.yml
     $ python -m pip install -e .
     # install git pre-commit hooks
     $ pre-commit install
@@ -66,7 +66,7 @@ $ git clone git@github.com:your_name_here/ibis-omniscidb.git
 or
 
 ```sh
-    $ conda create -n ibis-omniscidb-dev python=3.7 pip
+    $ conda create -n ibis-omniscidb python=3.7 pip
     $ python -m pip install -r requirements.txt
     $ python -m pip install -e .
     # install git pre-commit hooks
