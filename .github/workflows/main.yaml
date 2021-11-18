@@ -46,7 +46,7 @@ jobs:
     - name: install dependencies
       run: |
         if [[ "${{ matrix.pyomnisci-version }}" == "dev" ]]; then
-          python -m pip install --no-deps git+https://github.com/omnisci/pyomnisci.git
+          python -m pip install git+https://github.com/omnisci/pyomnisci.git
           python -m pip install git+https://github.com/ibis-project/ibis.git
         fi
         python -m pip install -e .
