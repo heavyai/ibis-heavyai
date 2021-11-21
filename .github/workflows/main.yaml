@@ -26,6 +26,8 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v1
+      with:
+        fetch-depth: 0
 
     - name: setup conda
       uses: conda-incubator/setup-miniconda@v2
@@ -44,10 +46,10 @@ jobs:
     - name: install dependencies
       run: |
         if [[ "${{ matrix.pyomnisci-version }}" == "dev" ]]; then
-          python -m pip install --no-deps git+https://github.com/omnisci/pyomnisci.git
+          python -m pip install git+https://github.com/omnisci/pyomnisci.git
           python -m pip install git+https://github.com/ibis-project/ibis.git
         fi
-        python -m pip install --no-deps -e .
+        python -m pip install -e .
 
     - name: show environment
       run: conda list
@@ -84,7 +86,7 @@ jobs:
 
     - name: install dependencies
       run: |
-        python -m pip install --no-deps -e .
+        python -m pip install -e .
         pre-commit install
 
     - name: show environment

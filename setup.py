@@ -21,7 +21,6 @@ setuptools.setup(
         'pyarrow',
         'rbc-project>=0.4.0',
     ],
-    setup_requires=['setuptools_scm'],
     use_scm_version=True,
     classifiers=[
         'Development Status :: 4 - Beta',

@@ -1,3 +1,6 @@
+# scm versioning
+ibis_omniscidb/_version.py
+
 *.swp
 *.pyc
 __pycache__
