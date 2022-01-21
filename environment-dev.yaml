@@ -6,7 +6,7 @@ channels:
 dependencies:
 
 # core
-- python
+- python <3.10
 - ibis-framework-core >2.0
 - pandas
 - pyomnisci >=0.28.1
