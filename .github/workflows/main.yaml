@@ -49,7 +49,7 @@ jobs:
       env:
         PYOMNISCI_VERSION: ${{ matrix.pyomnisci-version }}
       run: |
-        if [[ "${{PYOMNISCI_VERSION}}" == "dev" ]]; then
+        if [[ "${PYOMNISCI_VERSION}" == "dev" ]]; then
           python -m pip install git+https://github.com/omnisci/pyomnisci.git
           python -m pip install git+https://github.com/ibis-project/ibis.git
         fi
