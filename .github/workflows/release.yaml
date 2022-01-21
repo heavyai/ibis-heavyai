@@ -1,50 +1,37 @@
-name: Release
+name: Upload ibis-omniscidb to PyPi
 
 on:
-  release:
-    types: [published]
-  pull_request:
-    branches: [ master ]
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  build:
-
+  pypi-release:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
-    defaults:
-      run:
-        shell: bash -l {0}
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
 
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        miniconda-version: "latest"
-        mamba-version: "*"
-        environment-file: environment-release.yaml
-        channels: conda-forge
-        activate-environment: ibis-omniscidb
-        use-mamba: true
-        miniforge-variant: Mambaforge
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.9
+          mamba-version: "*"
+          channels: conda-forge
+          activate-environment: ibis-omniscidb
+          environment-file: environment-dev.yml
 
-    - name: Build a binary wheel and a source tarball
-      run: python -m build --sdist --wheel --outdir dist/
+      - name: Build distribution
+        shell: bash -l {0}
+        run: python setup.py sdist bdist_wheel
 
-    - name: Check packages
-      run: twine check dist/*
-
-    - name: Publish distribution 📦 to Test PyPI
-      uses: pypa/gh-action-pypi-publish@master
-      if: ${{ github.event_name == 'release' }}
-      with:
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
-
-    - name: Publish distribution 📦 to PyPI
-      uses: pypa/gh-action-pypi-publish@master
-      if: ${{ github.event_name == 'release' }}
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          verbose: true
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
