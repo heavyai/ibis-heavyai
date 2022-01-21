@@ -10,6 +10,7 @@ jobs:
   tests:
     name: Tests OmniSciDB
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     env:
       BACKENDS: "omniscidb"
@@ -24,12 +25,12 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - name: Checkout
+    - name: checkout
       uses: actions/checkout@v1
       with:
         fetch-depth: 0
 
-    - name: Setup Conda
+    - name: setup Conda
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: ibis-omniscidb
@@ -37,15 +38,15 @@ jobs:
         environment-file: environment-dev.yaml
         mamba-version: "*"
 
-    - name: Start omniscidb service
+    - name: start omniscidb service
       run: |
         docker-compose --file ci/docker-compose.yaml up -d omniscidb
 
-    - name: Wait for omniscidb service
+    - name: wait for omniscidb service
       run: |
         docker-compose --file ci/docker-compose.yaml up waiter
 
-    - name: Install dependencies
+    - name: install dependencies
       env:
         PYOMNISCI_VERSION: ${{ matrix.pyomnisci-version }}
       run: |
@@ -55,19 +56,19 @@ jobs:
         fi
         python -m pip install -e .
 
-    - name: Show environment
+    - name: show environment
       run: |
         conda list
 
-    - name: Setup tests
+    - name: setup tests
       run: |
         python ci/setup_tests.py
 
-    - name: Run custom backend tests
+    - name: run custom backend tests
       run: |
         python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
 
-    - name: Run ibis backend tests
+    - name: run ibis backend tests
       if: always()
       run: |
         PYTEST_BACKENDS="omniscidb" python -m pytest --pyargs ibis.backends.tests
