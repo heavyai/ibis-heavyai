@@ -6,8 +6,8 @@ channels:
 dependencies:
 
 # core
-- python
-- ibis-framework-core >=2
+- python <3.10
+- ibis-framework-core >2.0
 - pandas
 - pyomnisci >=0.28.1
 - pyarrow
