@@ -11,6 +11,8 @@ import pytest
 from ibis.backends.base import BaseBackend
 from ibis.backends.tests.base import BackendTest, RoundAwayFromZero
 
+import ibis_omniscidb
+
 OMNISCIDB_HOST = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
 OMNISCIDB_PORT = int(os.environ.get('IBIS_TEST_OMNISCIDB_PORT', 6274))
 OMNISCIDB_USER = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
@@ -88,7 +90,7 @@ def con():
     -------
     ibis.omniscidb.OmniSciDBClient
     """
-    return ibis.omniscidb.connect(
+    return ibis_omniscidb.connect(
         protocol=OMNISCIDB_PROTOCOL,
         host=OMNISCIDB_HOST,
         port=OMNISCIDB_PORT,
@@ -124,7 +126,7 @@ def test_table(con):
 def session_con():
     """Define a session connection fixture."""
     # TODO: fix return issue
-    return ibis.omniscidb.connect(
+    return ibis_omniscidb.connect(
         protocol=OMNISCIDB_PROTOCOL,
         host=OMNISCIDB_HOST,
         port=OMNISCIDB_PORT,
