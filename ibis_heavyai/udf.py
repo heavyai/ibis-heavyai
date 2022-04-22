@@ -1,4 +1,4 @@
-"""OmniSciDB User Defined Function (UDF) Implementation."""
+"""HeavyDB User Defined Function (UDF) Implementation."""
 import functools
 import types
 from typing import Callable, List, Optional
@@ -147,11 +147,11 @@ def _create_function(name, nargs):
     return types.FunctionType(new_code, {}, name)
 
 
-class OmniSciDBUDF:
+class HeavyDBUDF:
     """
-    OmniSciDB UDF class.
+    HeavyDB UDF class.
 
-    OmniSciDB uses RBC (Remote Backend Client) to support UDF.
+    HeavyDB uses RBC (Remote Backend Client) to support UDF.
     """
 
     def __init__(
@@ -203,7 +203,7 @@ class OmniSciDBUDF:
                 input_type, output_type, infer_literal=infer_literal
             )(f)
 
-        def omnisci_wrapper(f, input_type=input_type, output_type=output_type):
+        def heavydb_wrapper(f, input_type=input_type, output_type=output_type):
             signature = '{}({})'.format(
                 ibis_dtypes_to_str[output_type],
                 ', '.join([ibis_dtypes_to_str[v] for v in input_type]),
@@ -218,7 +218,7 @@ class OmniSciDBUDF:
                 input_type, output_type, infer_literal=infer_literal
             )(f)
 
-        return omnisci_wrapper
+        return heavydb_wrapper
 
     def elementwise(
         self,

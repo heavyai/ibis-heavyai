@@ -1,16 +1,16 @@
-.. _omnisci:
+.. _heavyai:
 
-*********
-OmniSciDB
-*********
+*******
+HeavyDB
+*******
 
-To get started with the OmniSci client, check the :ref:`OmniSci quick start <install.omniscidb>`.
+To get started with the HeavyDB client, check the :ref:`HeavyDB quick start <install.heavyai>`.
 
-For the API documentation, visit the :ref:`OmniSci API <api.omniscidb>`.
+For the API documentation, visit the :ref:`HeavyDB API <api.heavyai>`.
 
-.. _install.omniscidb:
+.. _install.heavyai:
 
-`omniscidb <https://www.omnisci.com/>`_ Quickstart
+`heavyai <https://www.omnisci.com/>`_ Quickstart
 ==================================================
 
 Install dependencies for Ibis's HeavyDB dialect:
@@ -21,12 +21,12 @@ Install dependencies for Ibis's HeavyDB dialect:
 
 Create a client by passing in database connection parameters such as ``host``,
 ``port``, ``database``,  ``user`` and ``password`` to
-:func:`ibis.omniscidb.connect`:
+:func:`ibis.heavyai.connect`:
 
 .. code-block:: python
 
-   con = ibis.omniscidb.connect(
-       host='omniscidb',
+   con = ibis.heavyai.connect(
+       host='localhost',
        database='ibis_testing',
        user='admin',
        password='HyperInteractive',
@@ -35,17 +35,17 @@ Create a client by passing in database connection parameters such as ``host``,
 
 .. note::
 
-   OmniSciDB backend support OmniSciDB version greater than or equals to `5.3.0`.
+   HeavyDB backend support HeavyDB version greater than or equals to `5.3.0`.
 
-.. _api.omniscidb:
+.. _api.heavyai:
 
 API
 ===
-.. currentmodule:: ibis.backends.omniscidb
+.. currentmodule:: ibis.backends.heavyai
 
-The OmniSciDB client is accessible through the ``ibis.omniscidb`` namespace.
+The HeavyDB client is accessible through the ``ibis.heavyai`` namespace.
 
-Use ``ibis.omniscidb.connect`` to create a client.
+Use ``ibis.heavyai.connect`` to create a client.
 
 .. autosummary::
    :toctree: ../generated/
@@ -53,40 +53,40 @@ Use ``ibis.omniscidb.connect`` to create a client.
    compile
    connect
    verify
-   OmniSciDBClient.alter_user
-   OmniSciDBClient.close
-   OmniSciDBClient.create_database
-   OmniSciDBClient.create_table
-   OmniSciDBClient.create_user
-   OmniSciDBClient.create_view
-   OmniSciDBClient.database
-   OmniSciDBClient.describe_formatted
-   OmniSciDBClient.drop_database
-   OmniSciDBClient.drop_table
-   OmniSciDBClient.drop_table_or_view
-   OmniSciDBClient.drop_user
-   OmniSciDBClient.drop_view
-   OmniSciDBClient.exists_table
-   OmniSciDBClient.get_schema
-   OmniSciDBClient.list_tables
-   OmniSciDBClient.load_data
-   OmniSciDBClient.log
-   OmniSciDBClient.set_database
-   OmniSciDBClient.sql
-   OmniSciDBClient.table
-   OmniSciDBClient.truncate_table
-   OmniSciDBClient.version
+   HeavyDBClient.alter_user
+   HeavyDBClient.close
+   HeavyDBClient.create_database
+   HeavyDBClient.create_table
+   HeavyDBClient.create_user
+   HeavyDBClient.create_view
+   HeavyDBClient.database
+   HeavyDBClient.describe_formatted
+   HeavyDBClient.drop_database
+   HeavyDBClient.drop_table
+   HeavyDBClient.drop_table_or_view
+   HeavyDBClient.drop_user
+   HeavyDBClient.drop_view
+   HeavyDBClient.exists_table
+   HeavyDBClient.get_schema
+   HeavyDBClient.list_tables
+   HeavyDBClient.load_data
+   HeavyDBClient.log
+   HeavyDBClient.set_database
+   HeavyDBClient.sql
+   HeavyDBClient.table
+   HeavyDBClient.truncate_table
+   HeavyDBClient.version
 
 Backend internals
 =================
 
 In this document it would be explained the main aspects of `ibis` and
-`omniscidb` backend implementation.
+`heavyai` backend implementation.
 
 Modules
 -------
 
-omniscidb backend has 7 modules, the main three are:
+The `heavyai` backend has 7 modules, the main three are:
 
 - `api`
 - `client`
@@ -103,8 +103,8 @@ the follow code into `ibis.__init__`:
 .. code-block:: python
 
     with suppress(ImportError):
-        # pip install ibis-omniscidb
-        from ibis.backends import omniscidb
+        # pip install ibis-heavyai
+        from ibis.backends import heavyai
 
 There are three functions in the `api` module:
 
@@ -120,7 +120,7 @@ There are three functions in the `api` module:
     proj = t['arrtime', 'arrdelay']
     print(ibis.omniscidb.compile(proj))
 
-:func:`~ibis.omnisci.api.connect` method instantiates a :class:`~ibis.omnisci.api.OmniSciDBClient` object that connect to the specified
+:func:`~ibis.omnisci.api.connect` method instantiates a :class:`~ibis.omnisci.api.HeavyDBClient` object that connect to the specified
 `omniscidb` database:
 
 .. code-block:: python
@@ -146,19 +146,19 @@ database.
 
 The main classes are:
 
-- :class:`~ibis.omnisci.api.OmniSciDBClient`
-- `OmniSciDBQuery`
-- `OmniSciDBDataType`
-- `OmniSciDBDefaultCursor`
+- :class:`~ibis.omnisci.api.HeavyDBClient`
+- `HeavyDBQuery`
+- `HeavyDBDataType`
+- `HeavyDBDefaultCursor`
 
-`OmniSciDBDataType` class is used to translate data type from `ibis` and to `ibis`.
+`HeavyDBDataType` class is used to translate data type from `ibis` and to `ibis`.
 Its main methods are:
 
 - `parse`
 - `to_ibis`
 - `from_ibis`
 
-:class:`~ibis.omnisci.api.OmniSciDBClient` class is used to connect to an `omniscidb` database and manipulate data
+:class:`~ibis.omnisci.api.HeavyDBClient` class is used to connect to an `omniscidb` database and manipulate data
 expressions. Its main methods are:
 
 - `__init__`
@@ -167,22 +167,22 @@ expressions. Its main methods are:
 - `_fully_qualified_name`
 - `_get_table_schema`
 - `_table_expr_klass`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.log`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.close`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.database`
+- :func:`~ibis.omnisci.api.HeavyDBClient.log`
+- :func:`~ibis.omnisci.api.HeavyDBClient.close`
+- :func:`~ibis.omnisci.api.HeavyDBClient.database`
 - `current_database`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.set_database`
+- :func:`~ibis.omnisci.api.HeavyDBClient.set_database`
 - `exists_database`
 - `list_databases`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.exists_table`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.list_tables`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.get_schema`
-- :func:`~ibis.omnisci.api.OmniSciDBClient.version`
+- :func:`~ibis.omnisci.api.HeavyDBClient.exists_table`
+- :func:`~ibis.omnisci.api.HeavyDBClient.list_tables`
+- :func:`~ibis.omnisci.api.HeavyDBClient.get_schema`
+- :func:`~ibis.omnisci.api.HeavyDBClient.version`
 
 `_build_ast` method is required.
 
-`OmniSciDBQuery` class should define at least the `_fetch` method. If `Query`
-class is used when the `OmniSciDBClient.execute` method is called, an exception
+`HeavyDBQuery` class should define at least the `_fetch` method. If `Query`
+class is used when the `HeavyDBClient.execute` method is called, an exception
 is raised.
 
     (...) once the data arrives from the database we need to convert that data
@@ -201,12 +201,12 @@ compiler
 
 The main classes inside `compiler` module are:
 
-- `OmniSciDBDialect`
-- `OmniSciDBExprTranslator`
-- `OmniSciDBQueryBuilder`
-- `OmniSciDBSelect`
-- `OmniSciDBSelectBuilder`
-- `OmniSciDBTableSetFormatter`
+- `HeavyDBDialect`
+- `HeavyDBExprTranslator`
+- `HeavyDBQueryBuilder`
+- `HeavyDBSelect`
+- `HeavyDBSelectBuilder`
+- `HeavyDBTableSetFormatter`
 
 operations
 ----------

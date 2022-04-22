@@ -1,4 +1,4 @@
-"""OmniSci reserved words."""
+"""HeavyDB reserved words."""
 
 _ddl = frozenset(
     {

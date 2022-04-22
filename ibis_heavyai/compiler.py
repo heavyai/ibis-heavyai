@@ -1,4 +1,4 @@
-"""OmniSciDB Compiler module."""
+"""HeavyDB Compiler module."""
 import typing
 from io import StringIO
 
@@ -10,26 +10,26 @@ import ibis.util as util
 from ibis.backends.base.sql import compiler
 from ibis.expr.api import _add_methods, _binop_expr, _unary_op
 
-from . import operations as omniscidb_ops
+from . import operations as heavydb_ops
 from .identifiers import quote_identifier  # noqa: F401
 from .operations import _type_to_sql_string  # noqa: F401
 
 
-class OmniSciDBSelectBuilder(compiler.SelectBuilder):
-    """OmniSciDB Select Builder class."""
+class HeavyDBSelectBuilder(compiler.SelectBuilder):
+    """HeavyDB Select Builder class."""
 
     def _convert_group_by(self, exprs):
         return exprs
 
 
-class OmniSciDBQueryContext(compiler.QueryContext):
-    """OmniSciDB Query Context class."""
+class HeavyDBQueryContext(compiler.QueryContext):
+    """HeavyDB Query Context class."""
 
     always_alias = False
 
 
-class OmniSciDBSelect(compiler.Select):
-    """OmniSciDB Select class."""
+class HeavyDBSelect(compiler.Select):
+    """HeavyDB Select class."""
 
     def format_group_by(self) -> typing.Optional[str]:
         """Format the group by clause.
@@ -77,8 +77,8 @@ class OmniSciDBSelect(compiler.Select):
         return buf.getvalue()
 
 
-class OmniSciDBTableSetFormatter(compiler.TableSetFormatter):
-    """OmniSciDB Table Set Formatter class."""
+class HeavyDBTableSetFormatter(compiler.TableSetFormatter):
+    """HeavyDB Table Set Formatter class."""
 
     _join_names = {
         ops.InnerJoin: 'JOIN',
@@ -158,10 +158,10 @@ class OmniSciDBTableSetFormatter(compiler.TableSetFormatter):
         return name
 
 
-class OmniSciDBExprTranslator(compiler.ExprTranslator):
-    """OmniSciDB Expr Translator class."""
+class HeavyDBExprTranslator(compiler.ExprTranslator):
+    """HeavyDB Expr Translator class."""
 
-    _registry = omniscidb_ops._operation_registry
+    _registry = heavydb_ops._operation_registry
     _rewrites = compiler.ExprTranslator._rewrites.copy()
 
     def name(self, translated: str, name: str, force=True):
@@ -179,12 +179,12 @@ class OmniSciDBExprTranslator(compiler.ExprTranslator):
         -------
         str
         """
-        return omniscidb_ops._name_expr(translated, name)
+        return heavydb_ops._name_expr(translated, name)
 
 
-rewrites = OmniSciDBExprTranslator.rewrites
+rewrites = HeavyDBExprTranslator.rewrites
 
-omniscidb_reg = omniscidb_ops._operation_registry
+heavydb_reg = heavydb_ops._operation_registry
 
 
 @rewrites(ops.FloorDivide)
@@ -194,7 +194,7 @@ def _floor_divide(expr):
 
 
 @rewrites(ops.All)
-def omniscidb_rewrite_all(expr: ibis.Expr) -> ibis.Expr:
+def heavydb_rewrite_all(expr: ibis.Expr) -> ibis.Expr:
     """Rewrite All operation.
 
     Parameters
@@ -205,11 +205,11 @@ def omniscidb_rewrite_all(expr: ibis.Expr) -> ibis.Expr:
     -------
     [type]
     """
-    return omniscidb_ops._all(expr)
+    return heavydb_ops._all(expr)
 
 
 @rewrites(ops.Any)
-def omniscidb_rewrite_any(expr: ibis.Expr) -> ibis.Expr:
+def heavydb_rewrite_any(expr: ibis.Expr) -> ibis.Expr:
     """Rewrite Any operation.
 
     Parameters
@@ -220,11 +220,11 @@ def omniscidb_rewrite_any(expr: ibis.Expr) -> ibis.Expr:
     -------
     ibis.Expr
     """
-    return omniscidb_ops._any(expr)
+    return heavydb_ops._any(expr)
 
 
 @rewrites(ops.NotAll)
-def omniscidb_rewrite_not_all(expr: ibis.Expr) -> ibis.Expr:
+def heavydb_rewrite_not_all(expr: ibis.Expr) -> ibis.Expr:
     """Rewrite Not All operation.
 
     Parameters
@@ -235,11 +235,11 @@ def omniscidb_rewrite_not_all(expr: ibis.Expr) -> ibis.Expr:
     -------
     ibis.Expr
     """
-    return omniscidb_ops._not_all(expr)
+    return heavydb_ops._not_all(expr)
 
 
 @rewrites(ops.NotAny)
-def omniscidb_rewrite_not_any(expr: ibis.Expr) -> ibis.Expr:
+def heavydb_rewrite_not_any(expr: ibis.Expr) -> ibis.Expr:
     """Rewrite Not Any operation.
 
     Parameters
@@ -250,40 +250,40 @@ def omniscidb_rewrite_not_any(expr: ibis.Expr) -> ibis.Expr:
     -------
     ibis.Expr
     """
-    return omniscidb_ops._not_any(expr)
+    return heavydb_ops._not_any(expr)
 
 
 _add_methods(
     ir.NumericValue,
     {
         'conv_4326_900913_x': _unary_op(
-            'conv_4326_900913_x', omniscidb_ops.Conv_4326_900913_X
+            'conv_4326_900913_x', heavydb_ops.Conv_4326_900913_X
         ),
         'conv_4326_900913_y': _unary_op(
-            'conv_4326_900913_y', omniscidb_ops.Conv_4326_900913_Y
+            'conv_4326_900913_y', heavydb_ops.Conv_4326_900913_Y
         ),
-        'truncate': _binop_expr('truncate', omniscidb_ops.NumericTruncate),
+        'truncate': _binop_expr('truncate', heavydb_ops.NumericTruncate),
     },
 )
 
 _add_methods(
     ir.StringValue,
-    {'byte_length': _unary_op('length', omniscidb_ops.ByteLength)},
+    {'byte_length': _unary_op('length', heavydb_ops.ByteLength)},
 )
 
 
-class OmniSciDBCompiler(compiler.Compiler):
-    """OmniSciDB Query Builder class."""
+class HeavyDBCompiler(compiler.Compiler):
+    """HeavyDB Query Builder class."""
 
-    translator_class = OmniSciDBExprTranslator
-    select_builder_class = OmniSciDBSelectBuilder
-    context_class = OmniSciDBQueryContext
-    table_set_formatter_class = OmniSciDBTableSetFormatter
-    select_class = OmniSciDBSelect
+    translator_class = HeavyDBExprTranslator
+    select_builder_class = HeavyDBSelectBuilder
+    context_class = HeavyDBQueryContext
+    table_set_formatter_class = HeavyDBTableSetFormatter
+    select_class = HeavyDBSelect
     union_class = None
 
     @staticmethod
     def _make_union(union_class, expr, context):
         raise com.UnsupportedOperationError(
-            "OmniSciDB backend doesn't support Union operation"
+            "HeavyDB backend doesn't support Union operation"
         )

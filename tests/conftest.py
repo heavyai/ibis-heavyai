@@ -1,4 +1,4 @@
-"""OmniSciDB test configuration module."""
+"""HeavyDB test configuration module."""
 import os
 import typing
 from pathlib import Path
@@ -11,18 +11,16 @@ import pytest
 from ibis.backends.base import BaseBackend
 from ibis.backends.tests.base import BackendTest, RoundAwayFromZero
 
-OMNISCIDB_HOST = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
-OMNISCIDB_PORT = int(os.environ.get('IBIS_TEST_OMNISCIDB_PORT', 6274))
-OMNISCIDB_USER = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
-OMNISCIDB_PASS = os.environ.get(
-    'IBIS_TEST_OMNISCIDB_PASSWORD', 'HyperInteractive'
-)
-OMNISCIDB_PROTOCOL = os.environ.get('IBIS_TEST_OMNISCIDB_PROTOCOL', 'binary')
-OMNISCIDB_DB = os.environ.get('IBIS_TEST_DATA_DB', 'ibis_testing')
+HEAVYDB_HOST = os.environ.get('IBIS_TEST_HEAVYDB_HOST', 'localhost')
+HEAVYDB_PORT = int(os.environ.get('IBIS_TEST_HEAVYDB_PORT', 6274))
+HEAVYDB_USER = os.environ.get('IBIS_TEST_HEAVYDB_USER', 'admin')
+HEAVYDB_PASS = os.environ.get('IBIS_TEST_HEAVYDB_PASSWORD', 'HyperInteractive')
+HEAVYDB_PROTOCOL = os.environ.get('IBIS_TEST_HEAVYDB_PROTOCOL', 'binary')
+HEAVYDB_DB = os.environ.get('IBIS_TEST_DATA_DB', 'ibis_testing')
 
-URI_USER = f'{OMNISCIDB_USER}:{OMNISCIDB_PASS}'
-URI_HOST = f'{OMNISCIDB_HOST}:{OMNISCIDB_PORT}'
-URI = f'omniscidb://{URI_USER}@{URI_HOST}/{OMNISCIDB_DB}'
+URI_USER = f'{HEAVYDB_USER}:{HEAVYDB_PASS}'
+URI_HOST = f'{HEAVYDB_HOST}:{HEAVYDB_PORT}'
+URI = f'heavydb://{URI_USER}@{URI_HOST}/{HEAVYDB_DB}'
 
 
 class TestConf(BackendTest, RoundAwayFromZero):
@@ -57,21 +55,19 @@ class TestConf(BackendTest, RoundAwayFromZero):
         In the parent class, this is automatically obtained from the name of
         the module, which is not the case for third-party backends.
         """
-        return 'omniscidb'
+        return 'heavydb'
 
     @staticmethod
     def connect(data_directory: Path) -> BaseBackend:
         """Connect to the test database."""
-        user = os.environ.get('IBIS_TEST_OMNISCIDB_USER', 'admin')
+        user = os.environ.get('IBIS_TEST_HEAVYDB_USER', 'admin')
         password = os.environ.get(
-            'IBIS_TEST_OMNISCIDB_PASSWORD', 'HyperInteractive'
+            'IBIS_TEST_HEAVYDB_PASSWORD', 'HyperInteractive'
         )
-        host = os.environ.get('IBIS_TEST_OMNISCIDB_HOST', 'localhost')
-        port = os.environ.get('IBIS_TEST_OMNISCIDB_PORT', '6274')
-        database = os.environ.get(
-            'IBIS_TEST_OMNISCIDB_DATABASE', 'ibis_testing'
-        )
-        return ibis.omniscidb.connect(
+        host = os.environ.get('IBIS_TEST_HEAVYDB_HOST', 'localhost')
+        port = os.environ.get('IBIS_TEST_HEAVYDB_PORT', '6274')
+        database = os.environ.get('IBIS_TEST_HEAVYDB_DATABASE', 'ibis_testing')
+        return ibis.heavyai.connect(
             host=host,
             port=port,
             user=user,
@@ -86,15 +82,15 @@ def con():
 
     Returns
     -------
-    ibis.omniscidb.OmniSciDBClient
+    ibis.heavyai.HeavyDBClient
     """
-    return ibis.omniscidb.connect(
-        protocol=OMNISCIDB_PROTOCOL,
-        host=OMNISCIDB_HOST,
-        port=OMNISCIDB_PORT,
-        user=OMNISCIDB_USER,
-        password=OMNISCIDB_PASS,
-        database=OMNISCIDB_DB,
+    return ibis.heavyai.connect(
+        protocol=HEAVYDB_PROTOCOL,
+        host=HEAVYDB_HOST,
+        port=HEAVYDB_PORT,
+        user=HEAVYDB_USER,
+        password=HEAVYDB_PASS,
+        database=HEAVYDB_DB,
     )
 
 
@@ -124,13 +120,13 @@ def test_table(con):
 def session_con():
     """Define a session connection fixture."""
     # TODO: fix return issue
-    return ibis.omniscidb.connect(
-        protocol=OMNISCIDB_PROTOCOL,
-        host=OMNISCIDB_HOST,
-        port=OMNISCIDB_PORT,
-        user=OMNISCIDB_USER,
-        password=OMNISCIDB_PASS,
-        database=OMNISCIDB_DB,
+    return ibis.heavyai.connect(
+        protocol=HEAVYDB_PROTOCOL,
+        host=HEAVYDB_HOST,
+        port=HEAVYDB_PORT,
+        user=HEAVYDB_USER,
+        password=HEAVYDB_PASS,
+        database=HEAVYDB_DB,
     )
     return session_con
 
@@ -141,7 +137,7 @@ def alltypes(con) -> ibis.expr.types.TableExpr:
 
     Parameters
     ----------
-    con : ibis.omniscidb.OmniSciDBClient
+    con : ibis.heavyai.HeavyDBClient
 
     Returns
     -------
@@ -156,7 +152,7 @@ def awards_players(con) -> ibis.expr.types.TableExpr:
 
     Parameters
     ----------
-    con : ibis.omniscidb.OmniSciDBClient
+    con : ibis.heavyai.HeavyDBClient
 
     Returns
     -------
@@ -171,7 +167,7 @@ def batting(con) -> ibis.expr.types.TableExpr:
 
     Parameters
     ----------
-    con : ibis.omniscidb.OmniSciDBClient
+    con : ibis.heavyai.HeavyDBClient
 
     Returns
     -------
@@ -186,7 +182,7 @@ def geo_table(con) -> ibis.expr.types.TableExpr:
 
     Parameters
     ----------
-    con : ibis.omniscidb.OmniSciDBClient
+    con : ibis.heavyai.HeavyDBClient
 
     Returns
     -------
@@ -219,11 +215,11 @@ def translate() -> typing.Callable:
     -------
     function
     """
-    from ..compiler import OmniSciDBCompiler
+    from ibis_heavyai import HeavyDBCompiler
 
-    context = OmniSciDBCompiler.make_context()
+    context = HeavyDBCompiler.make_context()
     return lambda expr: (
-        OmniSciDBCompiler.translator(expr, context).get_result()
+        HeavyDBCompiler.translator(expr, context).get_result()
     )
 
 
@@ -237,7 +233,7 @@ def temp_table(con) -> typing.Generator[str, None, None]:
 
     Parameters
     ----------
-    con : ibis.omniscidb.OmniSciDBClient
+    con : ibis.heavyai.HeavyDBClient
 
     Yields
     ------
@@ -255,7 +251,7 @@ def temp_table(con) -> typing.Generator[str, None, None]:
 @pytest.fixture(scope='session')
 def test_data_db() -> str:
     """Return the database name."""
-    return OMNISCIDB_DB
+    return HEAVYDB_DB
 
 
 @pytest.fixture
@@ -264,7 +260,7 @@ def temp_database(con, test_data_db: str) -> typing.Generator[str, None, None]:
 
     Parameters
     ----------
-    con : ibis.omniscidb.OmniSciDBClient
+    con : ibis.heavyai.HeavyDBClient
     test_data_db : str
 
     Yields

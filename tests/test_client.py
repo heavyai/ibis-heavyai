@@ -1,13 +1,13 @@
 import pathlib
 from typing import Optional
 
+import heavyai
 import ibis
 import ibis.common.exceptions as com
 import ibis.expr.types as ir
 import mock
 import pandas as pd
 import pyarrow
-import pyomnisci
 import pytest
 from ibis.tests.util import assert_equal
 from pytest import param
@@ -55,7 +55,7 @@ def test_list_tables(con):
 
 
 def test_session_id_connection(session_con):
-    new_connection = ibis.omniscidb.connect(
+    new_connection = ibis.heavyai.connect(
         protocol=session_con.protocol,
         host=session_con.host,
         port=session_con.port,
@@ -82,7 +82,7 @@ def test_database_layer(con, alltypes):
 def test_compile_toplevel():
     t = ibis.table([('foo', 'double')], name='t0')
     expr = t.foo.sum()
-    result = ibis.omniscidb.compile(expr)
+    result = ibis.heavyai.compile(expr)
     expected = 'SELECT sum("foo") AS "sum"\nFROM t0'  # noqa
     assert str(result) == expected
 
@@ -224,7 +224,7 @@ def test_read_csv(con, temp_table, filename, alltypes, df_alltypes):
     schema = alltypes.schema()
     con.create_table(temp_table, schema=schema)
 
-    # prepare csv file inside omnisci docker container
+    # prepare csv file inside HeavyDB docker container
     # if the file exists, then it will be overwritten
     con.raw_sql(
         "COPY (SELECT * FROM functional_alltypes) TO '{}'".format(filename)
@@ -259,14 +259,14 @@ def test_cpu_execution_type(
     if gpu_device and ipc is False:
         # test exception
         with pytest.raises(ibis.common.exceptions.IbisInputError):
-            ibis.omniscidb.connect(**connection_info)
+            ibis.heavyai.connect(**connection_info)
         return
 
     mocked_methods = []
 
     for mock_method_name in ('select_ipc', 'select_ipc_gpu'):
         mocked_method = mock.patch.object(
-            pyomnisci.connection.Connection,
+            heavyai.connection.Connection,
             mock_method_name,
             new=lambda *args, **kwargs: pd.DataFrame({'string_col': ['1']}),
         )
@@ -274,7 +274,7 @@ def test_cpu_execution_type(
         mocked_method.start()
         mocked_methods.append(mocked_method)
 
-    new_con = ibis.omniscidb.connect(**connection_info)
+    new_con = ibis.heavyai.connect(**connection_info)
     assert new_con is not None
     assert new_con.ipc == ipc
     assert new_con.gpu_device == gpu_device
@@ -336,8 +336,8 @@ def test_current_database(con):
     assert 'ibis_testing' == con.current_database
 
     with pytest.warns(FutureWarning):
-        db = con.database('omnisci')
-    assert 'omnisci' == db.name
+        db = con.database('heavyai')
+    assert 'heavyai' == db.name
 
     assert 'ibis_testing' == con.current_database
     con.db_name = 'nonesuch'

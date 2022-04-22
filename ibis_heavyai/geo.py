@@ -13,10 +13,10 @@ import shapely.wkt
 from heavydb.cursor import Cursor
 from heavydb.dtypes import TDatumType as heavydb_dtype
 
-from .client import OmniSciDBDefaultCursor
+from .client import HeavyDBDefaultCursor
 
 
-class OmniSciDBGeoCursor(OmniSciDBDefaultCursor):
+class HeavyDBGeoCursor(HeavyDBDefaultCursor):
     """Cursor that exports result to GeoPandas Data Frame."""
 
     def to_df(self):
@@ -38,7 +38,7 @@ class OmniSciDBGeoCursor(OmniSciDBDefaultCursor):
         col_names = [c.name for c in cursor_description]
         result = pd.DataFrame(cursor.fetchall(), columns=col_names)
 
-        # get geo types from pyomnisci
+        # get geo types from heavydb
         geotypes = (
             heavydb_dtype.POINT,
             heavydb_dtype.LINESTRING,

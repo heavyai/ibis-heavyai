@@ -3,7 +3,7 @@ requires = ["flit_core >=3.3,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "ibis-heavyai"
+name = "ibis_heavyai"
 version = "1.0"
 requires-python = ">=3.7"
 authors = [{name = "Heavy.AI", email = "community@heavy.ai"}]
@@ -17,8 +17,8 @@ classifiers = [
 ]
 
 dependencies = [
-    "ibis-framework-core >=2.0",
-    "heavyai >=6.0.0",
+    "ibis-framework >=2.0",
+    "heavyai",
     "rbc-project >=0.8.0",
     "pyarrow >=3.0.0",
     "regex",

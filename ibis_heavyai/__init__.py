@@ -20,10 +20,10 @@ from ibis.backends.base.sql.compiler import DDL, DML
 from importlib_metadata import PackageNotFoundError, version
 
 from . import ddl
-from . import dtypes as omniscidb_dtypes
-from .client import OmniSciDBDataType, OmniSciDBTable, get_cursor_class
-from .compiler import OmniSciDBCompiler
-from .udf import OmniSciDBUDF
+from . import dtypes as heavydb_dtypes
+from .client import HeavyDBDataType, HeavyDBTable, get_cursor_class
+from .compiler import HeavyDBCompiler
+from .udf import HeavyDBUDF
 
 try:
     __version__ = version("ibis_heavyai")
@@ -40,12 +40,12 @@ __all__ = ('Backend', "__version__")
 
 
 class Backend(BaseSQLBackend):
-    """When the backend is loaded, this class becomes `ibis.omniscidb`."""
+    """When the backend is loaded, this class becomes `ibis.heavyai`."""
 
-    name = 'heavydb'
+    name = 'heavyai'
     database_class = Database
-    table_expr_class = OmniSciDBTable
-    compiler = OmniSciDBCompiler
+    table_expr_class = HeavyDBTable
+    compiler = HeavyDBCompiler
     db_name: str | None
     con: heavyai.Connection
 
@@ -133,7 +133,7 @@ class Backend(BaseSQLBackend):
         )
 
         # used for UDF
-        new_backend.udf = OmniSciDBUDF(
+        new_backend.udf = HeavyDBUDF(
             host=new_backend.con._host,
             port=new_backend.con._port,
             database=new_backend.con._dbname,
@@ -152,7 +152,7 @@ class Backend(BaseSQLBackend):
 
         for col in descr:
             names.append(col.name)
-            col_type = OmniSciDBDataType._omniscidb_to_ibis_dtypes[col.type]
+            col_type = HeavyDBDataType._omniscidb_to_ibis_dtypes[col.type]
             col_type.nullable = col.nullable
             adapted_types.append(col_type)
         return names, adapted_types
@@ -202,7 +202,7 @@ class Backend(BaseSQLBackend):
         return sch.Schema.from_tuples(
             (
                 r.col_name,
-                OmniSciDBDataType._omniscidb_to_ibis_dtypes[
+                HeavyDBDataType._omniscidb_to_ibis_dtypes[
                     pyomnisci_dtype._VALUES_TO_NAMES[r.col_type.type]
                 ],
             )
@@ -343,7 +343,7 @@ class Backend(BaseSQLBackend):
             [
                 (
                     col.name,
-                    OmniSciDBDataType.parse(col.type),
+                    HeavyDBDataType.parse(col.type),
                     col.nullable,
                     col.precision,
                     col.scale,
@@ -744,7 +744,7 @@ class Backend(BaseSQLBackend):
         schema : ibis Schema
         """
         cols = {
-            col.name: omniscidb_dtypes.sql_to_ibis_dtypes[col.type](
+            col.name: heavydb_dtypes.sql_to_ibis_dtypes[col.type](
                 nullable=col.nullable
             )
             for col in self.con.get_table_details(table_name)

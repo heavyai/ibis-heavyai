@@ -7,7 +7,7 @@ import ibis
 from ibis.backends.base.sql.compiler import DDL, DML
 from ibis.common import exceptions as com
 
-from . import dtypes as omniscidb_dtypes
+from . import dtypes as heavydb_dtypes
 from .compiler import _type_to_sql_string, quote_identifier
 
 fully_qualified_re = re.compile(r"(.*)\.(?:`(.*)`|(.*))")
@@ -33,7 +33,7 @@ def _convert_default_value(value: Any) -> Any:
 
 def _bool2str(v: bool) -> str:
     """
-    Convert a bool value to a OmniSciDB bool value.
+    Convert a bool value to a HeavyDB bool value.
 
     Parameters
     ----------
@@ -46,26 +46,26 @@ def _bool2str(v: bool) -> str:
     return str(bool(v)).lower()
 
 
-class OmniSciDBQualifiedSQLStatement:
-    """OmniSciDBQualifiedSQLStatement."""
+class HeavyDBQualifiedSQLStatement:
+    """HeavyDBQualifiedSQLStatement."""
 
     def _get_scoped_name(self, obj_name, database):  # noqa: F401
         return obj_name
 
 
-class OmniSciDBDDL(DDL, OmniSciDBQualifiedSQLStatement):
-    """OmniSciDB DDL class."""
+class HeavyDBDDL(DDL, HeavyDBQualifiedSQLStatement):
+    """HeavyDB DDL class."""
 
 
-class OmniSciDBDML(DML, OmniSciDBQualifiedSQLStatement):
-    """OmniSciDB DML class."""
+class HeavyDBDML(DML, HeavyDBQualifiedSQLStatement):
+    """HeavyDB DML class."""
 
 
-class CreateDDL(OmniSciDBDDL):
+class CreateDDL(HeavyDBDDL):
     """Create DDL."""
 
 
-class DropObject(OmniSciDBDDL):
+class DropObject(HeavyDBDDL):
     """Drop object class."""
 
     def __init__(self, must_exist=True):
@@ -248,7 +248,7 @@ class DropView(DropTable):
 # DDL User classes
 
 
-class AlterUser(OmniSciDBDDL):
+class AlterUser(HeavyDBDDL):
     """Create user."""
 
     def __init__(
@@ -294,7 +294,7 @@ class AlterUser(OmniSciDBDDL):
         return '\n'.join(self.pieces)
 
 
-class CreateUser(OmniSciDBDDL):
+class CreateUser(HeavyDBDDL):
     """Create user."""
 
     def __init__(self, name, password, database=None, is_super=False):
@@ -326,7 +326,7 @@ class CreateUser(OmniSciDBDDL):
         return '\n'.join(self.pieces)
 
 
-class DropUser(OmniSciDBDDL):
+class DropUser(HeavyDBDDL):
     """Drop user."""
 
     def __init__(self, name, database=None):
@@ -356,7 +356,7 @@ class DropUser(OmniSciDBDDL):
 # DDL Table classes
 
 
-class AlterTable(OmniSciDBDDL):
+class AlterTable(HeavyDBDDL):
     """Alter Table class."""
 
     def __init__(self, args, **kwargs):
@@ -407,7 +407,7 @@ class AddColumns(AlterTable):
             yield '{}{} {}{}{}{}'.format(
                 sep,
                 col,
-                omniscidb_dtypes.ibis_dtypes_str_to_sql[d_type],
+                heavydb_dtypes.ibis_dtypes_str_to_sql[d_type],
                 ' NOT NULL'
                 if not self.nullables[idx] and self.defaults[idx] is None
                 else '',
@@ -499,7 +499,7 @@ class RenameTable(AlterTable):
         return self._wrap_command(cmd)
 
 
-class TruncateTable(OmniSciDBDDL):
+class TruncateTable(HeavyDBDDL):
     """Truncate Table class."""
 
     _object_type = 'TABLE'
@@ -519,7 +519,7 @@ class TruncateTable(OmniSciDBDDL):
         return 'TRUNCATE TABLE {}'.format(name)
 
 
-class CacheTable(OmniSciDBDDL):
+class CacheTable(HeavyDBDDL):
     """Cache Table class."""
 
     def __init__(self, table_name, database=None, pool='default'):
@@ -606,7 +606,7 @@ def _format_schema_element(name, tp, nullable):
     )
 
 
-class InsertPandas(OmniSciDBDML):
+class InsertPandas(HeavyDBDML):
     """Insert Data from Pandas class."""
 
     def __init__(self, table_name, df, insert_index=False, database=None):
@@ -654,7 +654,7 @@ class InsertPandas(OmniSciDBDML):
         return '\n'.join(self.pieces)
 
 
-class LoadData(OmniSciDBDDL):
+class LoadData(HeavyDBDDL):
     """Generate DDL for LOAD DATA command. Cannot be cancelled."""
 
     def __init__(

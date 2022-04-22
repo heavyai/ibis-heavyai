@@ -1,4 +1,4 @@
-"""OmniSciDB operations module."""
+"""HeavyDB operations module."""
 import math
 import warnings
 from datetime import date, datetime
@@ -42,7 +42,7 @@ def _type_to_sql_string(tval):
 
 
 def _cast(translator, expr):
-    from .client import OmniSciDBDataType
+    from .client import HeavyDBDataType
 
     op = expr.op()
     arg, target = op.args
@@ -54,11 +54,11 @@ def _cast(translator, expr):
 
         if type_ == 'GEOMETRY':
             raise com.UnsupportedOperationError(
-                'OmnisciDB/OmniSciDB doesn\'t support yet convert '
-                + 'from GEOGRAPHY to GEOMETRY.'
+                "HeavyDB doesn't support yet convert "
+                "from GEOGRAPHY to GEOMETRY."
             )
     else:
-        type_ = str(OmniSciDBDataType.from_ibis(target, nullable=False))
+        type_ = str(HeavyDBDataType.from_ibis(target, nullable=False))
     return 'CAST({0!s} AS {1!s})'.format(arg_, type_)
 
 
@@ -419,7 +419,7 @@ def _interval_format(translator, expr):
     dtype = expr.type()
     if dtype.unit in {'ms', 'us', 'ns'}:
         raise com.UnsupportedOperationError(
-            "OmniSciDB doesn't support subsecond interval resolutions"
+            "HeavyDB doesn't support subsecond interval resolutions"
         )
 
     return '{1}, (sign){0}'.format(expr.op().value, dtype.resolution.upper())
@@ -432,7 +432,7 @@ def _interval_from_integer(translator, expr):
     dtype = expr.type()
     if dtype.unit in {'ms', 'us', 'ns'}:
         raise com.UnsupportedOperationError(
-            "OmniSciDB doesn't support subsecond interval resolutions"
+            "HeavyDB doesn't support subsecond interval resolutions"
         )
 
     arg_ = translator.translate(arg)
@@ -556,7 +556,7 @@ def literal(translator, expr: ibis.expr.operations.Literal) -> str:
 
     Parameters
     ----------
-    translator : ibis.omniscidb.compiler.OmniSciDBExprTranslator
+    translator : ibis.heavyai.compiler.HeavyDBExprTranslator
     expr : ibis.expr.operations.Literal
 
     Returns
@@ -648,7 +648,7 @@ def raise_unsupported_expr_error(expr: ibis.Expr):
     ------
     com.UnsupportedOperationError
     """
-    msg = "OmniSciDB backend doesn't support {} operation!"
+    msg = "HeavyDB backend doesn't support {} operation!"
     op = expr.op()
     raise com.UnsupportedOperationError(msg.format(type(op)))
 
@@ -664,7 +664,7 @@ def raise_unsupported_op_error(translator, expr, *args):
     ------
     com.UnsupportedOperationError
     """
-    msg = "OmniSciDB backend doesn't support {} operation!"
+    msg = "HeavyDB backend doesn't support {} operation!"
     op = expr.op()
     raise com.UnsupportedOperationError(msg.format(type(op)))
 
@@ -789,7 +789,7 @@ def _arbitrary(translator, expr):
 
     if how not in (None, 'last'):
         raise com.UnsupportedOperationError(
-            '{!r} value not supported for arbitrary in OmniSciDB'.format(how)
+            '{!r} value not supported for arbitrary in HeavyDB'.format(how)
         )
 
     if where is not None:
@@ -873,12 +873,12 @@ def _window(translator, expr):
 
     if window.preceding is not None:
         raise com.UnsupportedOperationError(
-            'Window preceding is not supported by OmniSciDB backend yet'
+            'Window preceding is not supported by HeavyDB backend yet'
         )
 
     if window.following is not None and window.following != 0:
         raise com.UnsupportedOperationError(
-            'Window following is not supported by OmniSciDB backend yet'
+            'Window following is not supported by HeavyDB backend yet'
         )
     window.following = None
 
@@ -976,7 +976,7 @@ _comparison_ops: Dict = {}
 
 # MATH
 _math_ops = {
-    ops.Degrees: unary('degrees'),  # OmniSciDB function
+    ops.Degrees: unary('degrees'),  # HeavyDB function
     ops.Modulus: fixed_arity('mod', 2),
     ops.Pi: fixed_arity('pi', 0),
     ops.Radians: unary('radians'),

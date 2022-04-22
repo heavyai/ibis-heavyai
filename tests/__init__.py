@@ -1,1 +1,1 @@
-"""OmniSciDB unit tests module."""
+"""HeavyDB unit tests module."""

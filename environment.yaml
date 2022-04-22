@@ -1,4 +1,4 @@
-name: ibis-omniscidb
+name: ibis-heavyai
 channels:
 - conda-forge
 - defaults
@@ -7,8 +7,8 @@ dependencies:
 
 # core
 - python >=3.7
-- ibis-framework-core >2.0
-- heavyai >=6.0.0
+- ibis-framework-core >=2.0
+- heavyai
 - rbc >=0.8.0
 - pyarrow
 - regex
