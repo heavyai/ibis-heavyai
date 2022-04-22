@@ -13,7 +13,7 @@ import pandas as pd
 import pyarrow
 import regex as re
 from heavydb._parsers import _extract_column_details
-from heavydb.dtypes import TDatumType as pyomnisci_dtype
+from heavydb.dtypes import TDatumType as heavydb_dtype
 from ibis.backends.base import Database
 from ibis.backends.base.sql import BaseSQLBackend
 from ibis.backends.base.sql.compiler import DDL, DML
@@ -32,7 +32,7 @@ except PackageNotFoundError:
 
 
 try:
-    from cudf import DataFrame as GPUDataFrame
+    from cudf import DataFrame as GPUDataFrame  # noqa
 except (ImportError, OSError):
     GPUDataFrame = None
 
@@ -152,7 +152,7 @@ class Backend(BaseSQLBackend):
 
         for col in descr:
             names.append(col.name)
-            col_type = HeavyDBDataType._omniscidb_to_ibis_dtypes[col.type]
+            col_type = HeavyDBDataType._heavydb_to_ibis_dtypes[col.type]
             col_type.nullable = col.nullable
             adapted_types.append(col_type)
         return names, adapted_types
@@ -202,8 +202,8 @@ class Backend(BaseSQLBackend):
         return sch.Schema.from_tuples(
             (
                 r.col_name,
-                HeavyDBDataType._omniscidb_to_ibis_dtypes[
-                    pyomnisci_dtype._VALUES_TO_NAMES[r.col_type.type]
+                HeavyDBDataType._heavydb_to_ibis_dtypes[
+                    heavydb_dtype._VALUES_TO_NAMES[r.col_type.type]
                 ],
             )
             for r in result
