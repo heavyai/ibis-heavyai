@@ -46,6 +46,9 @@ dev = [
 Home = "https://github.com/heavyai/ibis-heavyai"
 Source = "https://github.com/heavyai/ibis-heavyai"
 
+[project.entry-points."ibis.backends"]
+heavyai = "ibis_heavyai"
+
 [tool.flit.sdist]
 exclude = [
     "tests/*", "ci/*", ".github/*",
