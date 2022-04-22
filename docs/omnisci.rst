@@ -13,11 +13,11 @@ For the API documentation, visit the :ref:`OmniSci API <api.omniscidb>`.
 `omniscidb <https://www.omnisci.com/>`_ Quickstart
 ==================================================
 
-Install dependencies for Ibis's omniscidb dialect:
+Install dependencies for Ibis's HeavyDB dialect:
 
 ::
 
-  pip install ibis-omniscidb
+  pip install ibis-heavyai
 
 Create a client by passing in database connection parameters such as ``host``,
 ``port``, ``database``,  ``user`` and ``password`` to
