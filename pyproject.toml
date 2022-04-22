@@ -3,7 +3,7 @@ requires = ["flit_core >=3.3,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "ibis_heavyai"
+name = "ibis-heavyai"
 version = "1.0"
 requires-python = ">=3.7"
 authors = [{name = "Heavy.AI", email = "community@heavy.ai"}]
@@ -48,6 +48,9 @@ Source = "https://github.com/heavyai/ibis-heavyai"
 
 [project.entry-points."ibis.backends"]
 heavyai = "ibis_heavyai"
+
+[tool.flit.module]
+name = "ibis_heavyai"
 
 [tool.flit.sdist]
 exclude = [
