@@ -45,7 +45,7 @@ Source = "https://github.com/heavyai/ibis-heavyai"
 [tool.flit.sdist]
 exclude = [
     "tests/*", "ci/*", ".github/*",
-    "*.yml", "*.yaml", ".*", "Jenkinsfile", "Makefile"
+    "*.yaml", ".*"
 ]
 
 [tool.black]
