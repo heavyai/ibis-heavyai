@@ -10,7 +10,7 @@ For the API documentation, visit the :ref:`HeavyDB API <api.heavyai>`.
 
 .. _install.heavyai:
 
-`heavyai <https://www.omnisci.com/>`_ Quickstart
+`heavyai <https://heavy.ai>`_ Quickstart
 ==================================================
 
 Install dependencies for Ibis's HeavyDB dialect:
@@ -108,45 +108,45 @@ the follow code into `ibis.__init__`:
 
 There are three functions in the `api` module:
 
-- :func:`~ibis.omnisci.api.compile`
-- :func:`~ibis.omnisci.api.connect`
-- :func:`~ibis.omnisci.api.verify`
+- :func:`~ibis.heavyai.api.compile`
+- :func:`~ibis.heavyai.api.connect`
+- :func:`~ibis.heavyai.api.verify`
 
-:func:`~ibis.omnisci.api.compile` method compiles an `ibis` expression into `SQL`:
+:func:`~ibis.heavyai.api.compile` method compiles an `ibis` expression into `SQL`:
 
 .. code-block:: python
 
-    t = omniscidb_cli.table('flights_2008_10k')
+    t = heavydb_cli.table('flights_2008_10k')
     proj = t['arrtime', 'arrdelay']
-    print(ibis.omniscidb.compile(proj))
+    print(ibis.heavyai.compile(proj))
 
-:func:`~ibis.omnisci.api.connect` method instantiates a :class:`~ibis.omnisci.api.HeavyDBClient` object that connect to the specified
-`omniscidb` database:
+:func:`~ibis.heavyai.api.connect` method instantiates a :class:`~ibis.heavyai.api.HeavyDBClient` object that connect to the specified
+`heavyai` database:
 
 .. code-block:: python
 
-    omniscidb_cli = ibis.omniscidb.connect(
+    heavydb_cli = ibis.heavyai.connect(
         host='localhost', user='admin', password='HyperInteractive',
-        port=6274, database='omnisci'
+        port=6274, database='heavyai'
     )
 
-:func:`~ibis.omnisci.api.verify` method checks if the `ibis` expression can be compiled:
+:func:`~ibis.heavyai.api.verify` method checks if the `ibis` expression can be compiled:
 
 .. code-block:: python
 
-    t = omniscidb_cli.table('flights_2008_10k')
+    t = heavydb_cli.table('flights_2008_10k')
     proj = t['arrtime', 'arrdelay']
-    assert ibis.omniscidb.verify(proj) == True
+    assert ibis.heavyai.verify(proj) == True
 
 client
 ------
 
-`client` module contains the main classes to handle the connection to an `omniscidb`
+`client` module contains the main classes to handle the connection to an `heavyai`
 database.
 
 The main classes are:
 
-- :class:`~ibis.omnisci.api.HeavyDBClient`
+- :class:`~ibis.heavyai.api.HeavyDBClient`
 - `HeavyDBQuery`
 - `HeavyDBDataType`
 - `HeavyDBDefaultCursor`
@@ -158,7 +158,7 @@ Its main methods are:
 - `to_ibis`
 - `from_ibis`
 
-:class:`~ibis.omnisci.api.HeavyDBClient` class is used to connect to an `omniscidb` database and manipulate data
+:class:`~ibis.heavyai.api.HeavyDBClient` class is used to connect to an `heavyai` database and manipulate data
 expressions. Its main methods are:
 
 - `__init__`
@@ -167,17 +167,17 @@ expressions. Its main methods are:
 - `_fully_qualified_name`
 - `_get_table_schema`
 - `_table_expr_klass`
-- :func:`~ibis.omnisci.api.HeavyDBClient.log`
-- :func:`~ibis.omnisci.api.HeavyDBClient.close`
-- :func:`~ibis.omnisci.api.HeavyDBClient.database`
+- :func:`~ibis.heavyai.api.HeavyDBClient.log`
+- :func:`~ibis.heavyai.api.HeavyDBClient.close`
+- :func:`~ibis.heavyai.api.HeavyDBClient.database`
 - `current_database`
-- :func:`~ibis.omnisci.api.HeavyDBClient.set_database`
+- :func:`~ibis.heavyai.api.HeavyDBClient.set_database`
 - `exists_database`
 - `list_databases`
-- :func:`~ibis.omnisci.api.HeavyDBClient.exists_table`
-- :func:`~ibis.omnisci.api.HeavyDBClient.list_tables`
-- :func:`~ibis.omnisci.api.HeavyDBClient.get_schema`
-- :func:`~ibis.omnisci.api.HeavyDBClient.version`
+- :func:`~ibis.heavyai.api.HeavyDBClient.exists_table`
+- :func:`~ibis.heavyai.api.HeavyDBClient.list_tables`
+- :func:`~ibis.heavyai.api.HeavyDBClient.get_schema`
+- :func:`~ibis.heavyai.api.HeavyDBClient.version`
 
 `_build_ast` method is required.
 
@@ -286,7 +286,7 @@ identifiers
 
 `identifiers` module keep a set of identifiers (`_identifiers`) to be used
 inside `quote_identifier` function (inside the same module). `_identifiers` is
-a set of reserved words from `omniscidb` language.
+a set of reserved words from HeavyDB language.
 
 `quote_identifiers` is used to put quotes around the string sent if the string
 match to specific criteria.
@@ -296,7 +296,7 @@ Timestamp/Date operations
 
 **Interval:**
 
-omniscidb Interval statement allows just the following date/time attribute: YEAR, DAY,
+HeavyDB Interval statement allows just the following date/time attribute: YEAR, DAY,
 MONTH, HOUR, MINUTE, SECOND
 
 To use the interval statement, it is necessary to use a `integer literal/constant`
@@ -309,7 +309,7 @@ and use the `to_interval` method:
 .. code-block:: sql
 
     SELECT TIMESTAMPADD(YEAR, 1, "arr_timestamp") AS tmp
-    FROM omniscidb.flights_2008_10k
+    FROM heavyai.flights_2008_10k
 
 Another way to use intervals is using `ibis.interval(years=1)`
 
@@ -321,7 +321,7 @@ To extract a date part information from a timestamp, `extract` would be used:
 
     >>> t['arr_timestamp'].extract('YEAR')
 
-The `extract` method is just available on `ibis.omniscidb` backend.
+The `extract` method is just available on `ibis.heavyai` backend.
 
 The operators allowed are: YEAR, QUARTER, MONTH, DAY, HOUR, MINUTE, SECOND,
 DOW, ISODOW, DOY, EPOCH, QUARTERDAY, WEEK
@@ -345,22 +345,22 @@ The result will be:
 .. code-block:: sql
 
     SELECT EXTRACT(YEAR FROM "arr_timestamp") AS tmp
-    FROM omniscidb.flights_2008_10k
+    FROM heavyai.flights_2008_10k
 
     SELECT EXTRACT(MONTH FROM "arr_timestamp") AS tmp
-    FROM omniscidb.flights_2008_10k
+    FROM heavyai.flights_2008_10k
 
     SELECT EXTRACT(DAY FROM "arr_timestamp") AS tmp
-    FROM omniscidb.flights_2008_10k
+    FROM heavyai.flights_2008_10k
 
     SELECT EXTRACT(HOUR FROM "arr_timestamp") AS tmp
-    FROM omniscidb.flights_2008_10k
+    FROM heavyai.flights_2008_10k
 
     SELECT EXTRACT(MINUTE FROM "arr_timestamp") AS tmp
-    FROM omniscidb.flights_2008_10k
+    FROM heavyai.flights_2008_10k
 
     SELECT EXTRACT(SECOND FROM "arr_timestamp") AS tmp
-    FROM omniscidb.flights_2008_10k
+    FROM heavyai.flights_2008_10k
 
 **Timestap/Date Truncate**
 
@@ -378,7 +378,7 @@ DECADE, QUARTERDAY
 String operations
 -----------------
 
-- `byte_length` is not part of `ibis` `string` operations, it will work just for `omniscidb` backend.
+- `byte_length` is not part of `ibis` `string` operations, it will work just for `heavyai` backend.
 
 `Not` operation can be done using `~` operator:
 
@@ -427,7 +427,7 @@ New implementations on `ibis` core:
 Issues appointed:
 
 - `Ibis` `CASE` statement wasn't allowing input and output with different types (https://github.com/ibis-project/ibis/issues/93 )
-- At this time, not all omniscidb `date parts` are available on `ibis` (https://github.com/ibis-project/ibis/issues/1430 )
+- At this time, not all heavyai `date parts` are available on `ibis` (https://github.com/ibis-project/ibis/issues/1430 )
 
 
 Pull Requests:
