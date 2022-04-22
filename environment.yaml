@@ -1,26 +1,24 @@
 name: ibis-omniscidb
 channels:
-- nodefaults
 - conda-forge
+- defaults
 
 dependencies:
 
 # core
 - python >=3.7
 - ibis-framework-core >2.0
-- pandas
 - heavyai >=6.0.0
-- pyarrow
 - rbc >=0.8.0
+- pyarrow
+- regex
+- pandas
 
 # geo
 - geopandas
-- gdal
 - shapely
 
 # dev
-- black
-- pip <21.3
 - pre-commit
 - pytest
 - pytest-cov

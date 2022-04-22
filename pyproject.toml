@@ -17,9 +17,11 @@ classifiers = [
 ]
 
 dependencies = [
+    "ibis-framework-core >=2.0",
     "heavyai >=6.0.0",
-    "rbc-project>=0.8.0",
+    "rbc-project >=0.8.0",
     "pyarrow >=3.0.0",
+    "regex",
     "pandas",
     "shapely",
     "geopandas",
