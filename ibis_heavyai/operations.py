@@ -21,10 +21,10 @@ from ibis.backends.base.sql.registry import (
     time_range_to_range_window,
 )
 
-from . import dtypes as omniscidb_dtypes
+from . import dtypes as heavydb_dtypes
 from .identifiers import quote_identifier
 
-_sql_type_names = omniscidb_dtypes.ibis_dtypes_str_to_sql
+_sql_type_names = heavydb_dtypes.ibis_dtypes_str_to_sql
 
 
 def _is_floating(*args):

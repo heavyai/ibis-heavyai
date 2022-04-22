@@ -25,6 +25,7 @@ dependencies = [
     "pandas",
     "shapely",
     "geopandas",
+    "importlib_metadata",  # drop for python >3.7
 ]
 
 [project.optional-dependencies]
@@ -32,6 +33,7 @@ test = [
     "pytest",
     "pytest-cov",
     "pytest-mock",
+    "mock",
 ]
 
 dev = [

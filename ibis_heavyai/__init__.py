@@ -1,23 +1,23 @@
-"""OmniSciDB backend."""
+"""HeavyDB backend."""
 from __future__ import annotations
 
 import warnings
-from importlib.metadata import PackageNotFoundError, version
 from typing import Optional, Union
 
+import heavyai
 import ibis.common.exceptions as com
 import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import pandas as pd
 import pyarrow
-import pyomnisci
 import regex as re
+from heavydb._parsers import _extract_column_details
+from heavydb.dtypes import TDatumType as pyomnisci_dtype
 from ibis.backends.base import Database
 from ibis.backends.base.sql import BaseSQLBackend
 from ibis.backends.base.sql.compiler import DDL, DML
-from omnisci._parsers import _extract_column_details
-from omnisci.dtypes import TDatumType as pyomnisci_dtype
+from importlib_metadata import PackageNotFoundError, version
 
 from . import ddl
 from . import dtypes as omniscidb_dtypes
@@ -26,7 +26,7 @@ from .compiler import OmniSciDBCompiler
 from .udf import OmniSciDBUDF
 
 try:
-    __version__ = version("ibis_omniscidb")
+    __version__ = version("ibis_heavyai")
 except PackageNotFoundError:
     __version__ = ""
 
@@ -42,12 +42,12 @@ __all__ = ('Backend', "__version__")
 class Backend(BaseSQLBackend):
     """When the backend is loaded, this class becomes `ibis.omniscidb`."""
 
-    name = 'omniscidb'
+    name = 'heavydb'
     database_class = Database
     table_expr_class = OmniSciDBTable
     compiler = OmniSciDBCompiler
     db_name: str | None
-    con: pyomnisci.Connection
+    con: heavyai.Connection
 
     def __del__(self):
         """Close the connection when instance is deleted."""
@@ -128,7 +128,7 @@ class Backend(BaseSQLBackend):
                 'or all `user`, `password` and `database` must be provided.'
             )
 
-        new_backend.con = pyomnisci.connect(
+        new_backend.con = heavyai.connect(
             uri=uri, host=host, port=port, protocol=protocol, **kwargs
         )
 
@@ -655,7 +655,7 @@ class Backend(BaseSQLBackend):
         """
         if self.db_name != name and name is not None:
             self.con.close()
-            self.con = pyomnisci.connect(
+            self.con = heavyai.connect(
                 uri=self.uri,
                 user=self.user,
                 password=self.password,
@@ -780,7 +780,7 @@ class Backend(BaseSQLBackend):
         string
             Version of the backend library.
         """
-        return pyomnisci.__version__
+        return heavyai.__version__
 
 
 def connect(

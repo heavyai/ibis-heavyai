@@ -12,7 +12,7 @@ import pytest
 from ibis.tests.util import assert_equal
 from pytest import param
 
-import ibis_omniscidb
+import ibis_heavyai
 
 from . import conftest
 
@@ -23,7 +23,7 @@ def test_connect_with_uri(con):
 
 def test_legacy_connect_warns():
     with pytest.warns(FutureWarning):
-        ibis_omniscidb.connect(conftest.URI)
+        ibis_heavyai.connect(conftest.URI)
 
 
 def test_table(alltypes):
@@ -350,4 +350,4 @@ def test_list_databases(con):
 
 
 def test_version():
-    assert ibis_omniscidb.__version__
+    assert ibis_heavyai.__version__

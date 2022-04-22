@@ -8,7 +8,7 @@ import ibis.expr.types as ir
 import pandas as pd
 import pyarrow
 import regex as re
-from omnisci.cursor import Cursor
+from heavydb.cursor import Cursor
 
 from . import ddl
 from . import dtypes as omniscidb_dtypes

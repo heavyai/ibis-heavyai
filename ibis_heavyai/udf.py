@@ -7,7 +7,7 @@ import ibis
 import ibis.expr.types as ir
 from ibis.expr import datatypes as dt
 from ibis.udf import vectorized
-from rbc.omniscidb import RemoteOmnisci
+from rbc.heavydb import RemoteHeavyDB
 
 from .dtypes import ibis_dtypes_to_str
 
@@ -162,7 +162,7 @@ class OmniSciDBUDF:
         user: Optional[str] = None,
         password: Optional[str] = None,
     ):
-        self.remote_backend_compiler = RemoteOmnisci(
+        self.remote_backend_compiler = RemoteHeavyDB(
             host=host,
             port=port,
             dbname=database,
