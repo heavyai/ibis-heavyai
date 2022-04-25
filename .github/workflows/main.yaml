@@ -51,15 +51,12 @@ jobs:
         fi
         python -m pip install -e .
 
-    - name: show environment
-      run: conda list
-
     - name: setup tests
       run: python ci/setup_tests.py
 
     - name: run custom backend tests
-      run: python -m pytest ibis_heavyai -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
+      run: python -m pytest tests -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
 
     - name: run ibis backend tests
-      run: PYTEST_BACKENDS="heavydb" python -m pytest --pyargs ibis.backends.tests
+      run: PYTEST_BACKENDS="heavyai" python -m pytest --pyargs ibis.backends.tests
       if: always()
