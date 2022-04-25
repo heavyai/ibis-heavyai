@@ -87,6 +87,6 @@ Before you submit a pull request, check that it meets these guidelines:
 
 ### Releasing
 
-To create a new release, publish a new tag. I will trigger the CI and release
+To create a new release, publish a new tag. It will trigger the CI and release
 on PyPI. When the package is released at PyPI, it will trigger a new
 release at conda-forge.
