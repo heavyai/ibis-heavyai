@@ -85,11 +85,12 @@ markers = [
     "backend",
     "udf",
     "geo",
-    "xfail_backends",
+    "xfail_backends",  # replaced by notyet ibis>2.1.2
+    "notyet",
     "xfail_unsupported",
     "skip_backends",
     "xpass_backends",
-    "only_on_backends",
-    "skip_missing_feature",
+    "only_on_backends",  # replaced by notimpl ibis>2.1.2
+    "notimpl",
     "min_spark_version",
 ]
