@@ -55,7 +55,7 @@ class TestConf(BackendTest, RoundAwayFromZero):
         In the parent class, this is automatically obtained from the name of
         the module, which is not the case for third-party backends.
         """
-        return 'heavydb'
+        return 'heavyai'
 
     @staticmethod
     def connect(data_directory: Path) -> BaseBackend:
