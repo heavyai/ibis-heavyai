@@ -79,7 +79,7 @@ exclude = [
 minversion = "6.0"
 addopts = "-rsx -v"
 testpaths = [
-    "tests",
+    "ibis_heavyai/tests",
 ]
 markers = [
     "backend",
@@ -91,6 +91,5 @@ markers = [
     "xpass_backends",
     "only_on_backends",
     "skip_missing_feature",
-    "omniscidb",
     "min_spark_version",
 ]

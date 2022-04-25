@@ -10,7 +10,7 @@ You can contribute in many ways:
 
 ### Report Bugs
 
-Report bugs at https://github.com/omnisci/ibis-omniscidb/issues.
+Report bugs at https://github.com/heavyai/ibis-heavyai/issues.
 
 If you are reporting a bug, please include:
 
@@ -30,13 +30,13 @@ and "help wanted" is open to whoever wants to implement it.
 
 ### Write Documentation
 
-ibis-omniscidb could always use more documentation, whether as part of the
-official ibis-omniscidb docs, in docstrings, or even on the web in blog posts,
+ibis-heavyai could always use more documentation, whether as part of the
+official ibis-heavyai docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 ### Submit Feedback
 
-The best way to send feedback is to file an issue at https://github.com/omnisci/ibis-omniscidb/issues.
+The best way to send feedback is to file an issue at https://github.com/heavyai/ibis-heavyai/issues.
 
 If you are proposing a feature:
 
@@ -47,27 +47,18 @@ If you are proposing a feature:
 
 ### Get Started!
 
-Ready to contribute? Here's how to set up `ibis-omniscidb` for local development.
+Ready to contribute? Here's how to set up `ibis-heavyai` for local development.
 
-1. Fork the `ibis-omniscidb` repo on GitHub.
+1. Fork the `ibis-heavyai` repo on GitHub.
 2. Clone your fork locally:
 ```sh
-$ git clone git@github.com:your_name_here/ibis-omniscidb.git
+$ git clone git@github.com:your_name_here/ibis-heavyai.git
 ```
 3. Install your local copy into a virtual environment. Assuming want to use conda environment,
    this is how you set up your fork for local development:
 ```sh
-    $ conda env create -n ibis-omniscidb --file environment-dev.yml
-    $ python -m pip install -e .
-    # install git pre-commit hooks
-    $ pre-commit install
-```
-
-or
-
-```sh
-    $ conda create -n ibis-omniscidb python=3.7 pip
-    $ python -m pip install -r requirements.txt
+    $ conda env create --file environment-dev.yml
+    $ conda activate ibis-heavyai
     $ python -m pip install -e .
     # install git pre-commit hooks
     $ pre-commit install
@@ -84,7 +75,7 @@ or
     $ git push origin name-of-your-bugfix-or-feature
 ```
 6. Submit a pull request through the GitHub website.
-`https://github.com/omnisci/ibis-omniscidb/tags`
+`https://github.com/heavyai/ibis-heavyai/tags`
 Pull Request Guidelines
 -----------------------
 
@@ -94,17 +85,8 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring.
 3. The pull request should work for Python 3.7 or newer.
 
-### Tips
-
-To run a subset of tests:
-```sh
-    $ pytest tests.test_expr.py
-```
 ### Releasing
 
-To cut a new release, go 
-[GitHub Releases](https://github.com/Quansight/qadmin/releases/new) 
-Add the information for the new release and then click on 
-"Publish Release", it trigger a CI job that will cut a release at
-PyPI. When the package is released at PyPI, it will trigger a new
+To create a new release, publish a new tag. I will trigger the CI and release
+on PyPI. When the package is released at PyPI, it will trigger a new
 release at conda-forge.

@@ -32,5 +32,5 @@ conda install -c conda-forge ibis-heavyai
 
 ## Documentation
 
-The [ibis-omniscidb](https://ibis-project.org/docs/backends/omnisci.html)
-documentation can be found in the [Ibis website](https://ibis-project.org/).
+The ibis-heavyai documentation can be found
+[here](https://github.com/heavyai/ibis-heavyai/docs/heavyai.rst).

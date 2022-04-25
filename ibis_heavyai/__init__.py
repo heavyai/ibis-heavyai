@@ -76,7 +76,7 @@ class Backend(BaseSQLBackend):
         ipc: Optional[bool] = None,
         gpu_device: Optional[int] = None,
     ):
-        """Create a client for OmniSciDB backend.
+        """Create a client for HeavyDB backend.
 
         Parameters
         ----------
@@ -97,7 +97,7 @@ class Backend(BaseSQLBackend):
 
         Returns
         -------
-        OmniSciDBClient
+        HeavyDBClient
         """
         new_backend = self.__class__()
         new_backend.uri = uri
@@ -143,7 +143,7 @@ class Backend(BaseSQLBackend):
         return new_backend
 
     def close(self):
-        """Close OmniSciDB connection and drop any temporary objects."""
+        """Close HeavyDB connection and drop any temporary objects."""
         self.con.close()
 
     def _adapt_types(self, descr):
@@ -180,7 +180,7 @@ class Backend(BaseSQLBackend):
             )
 
     def _fully_qualified_name(self, name, database):
-        # OmniSciDB raises error sometimes with qualified names
+        # HeavyDB raises error sometimes with qualified names
         return name
 
     def _get_list(self, cur):
@@ -266,12 +266,12 @@ class Backend(BaseSQLBackend):
         Exception
             if execution method fails.
         """
-        # time context is not implemented for omniscidb yet
+        # time context is not implemented for heavydb yet
         kwargs.pop('timecontext', None)
         # raise an Exception if kwargs is not empty:
         if kwargs:
             raise com.IbisInputError(
-                '"OmniSciDB.execute" method just support the follow parameter:'
+                '"HeavyDB.execute" method just support the follow parameter:'
                 ' "query", "results", "ipc" and "gpu_device". The follow extra'
                 ' parameters was given: "{}".'.format(', '.join(kwargs.keys()))
             )
@@ -304,11 +304,11 @@ class Backend(BaseSQLBackend):
         return result
 
     def ast_schema(self, query_ast, ipc=None, gpu_device=None):
-        """Allow ipc and gpu_device params, used in OmniSciDB `execute`."""
+        """Allow ipc and gpu_device params, used in HeavyDB `execute`."""
         return super().ast_schema(query_ast)
 
     def fetch_from_cursor(self, cursor, schema):
-        """Fetch OmniSciDB cursor and return a dataframe."""
+        """Fetch HeavyDB cursor and return a dataframe."""
         result = cursor.to_df()
         # TODO: try to use `apply_to` for cudf.DataFrame using cudf 0.9
         if GPUDataFrame is None or not isinstance(result, GPUDataFrame):
@@ -318,7 +318,7 @@ class Backend(BaseSQLBackend):
 
     def create_database(self, name, owner=None):
         """
-        Create a new OmniSciDB database.
+        Create a new HeavyDB database.
 
         Parameters
         ----------
@@ -365,7 +365,7 @@ class Backend(BaseSQLBackend):
 
     def drop_database(self, name, force=False):
         """
-        Drop an OmniSciDB database.
+        Drop an HeavyDB database.
 
         Parameters
         ----------
@@ -395,7 +395,7 @@ class Backend(BaseSQLBackend):
 
     def create_user(self, name, password, is_super=False):
         """
-        Create a new OmniSciDB user.
+        Create a new HeavyDB user.
 
         Parameters
         ----------
@@ -415,7 +415,7 @@ class Backend(BaseSQLBackend):
         self, name, password=None, is_super=None, insert_access=None
     ):
         """
-        Alter OmniSciDB user parameters.
+        Alter HeavyDB user parameters.
 
         Parameters
         ----------
@@ -624,7 +624,7 @@ class Backend(BaseSQLBackend):
         """
         Load data into a given table.
 
-        Wraps the LOAD DATA DDL statement. Loads data into an OmniSciDB table
+        Wraps the LOAD DATA DDL statement. Loads data into an HeavyDB table
         by physically moving data files.
 
         Parameters
@@ -796,8 +796,8 @@ def connect(
     gpu_device: Optional[int] = None,
 ):
     warnings.warn(
-        '`ibis_omniscidb.connect(...)` is deprecated and will be removed in '
-        'a future version. Use `ibis.omniscidb.connect(...)` instead.',
+        '`ibis_heavyai.connect(...)` is deprecated and will be removed in '
+        'a future version. Use `ibis.heavyai.connect(...)` instead.',
         FutureWarning,
     )
     return Backend().connect(
