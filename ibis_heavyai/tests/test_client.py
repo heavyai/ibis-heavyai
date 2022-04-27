@@ -218,7 +218,7 @@ def test_explain(con, alltypes):
 
 @pytest.mark.parametrize(
     'filename',
-    ["./test_read_csv.csv", pathlib.Path("./test_read_csv.csv")],
+    ["/tmp/test_read_csv.csv", pathlib.Path("/tmp/test_read_csv.csv")],
 )
 def test_read_csv(con, temp_table, filename, alltypes, df_alltypes):
     schema = alltypes.schema()
