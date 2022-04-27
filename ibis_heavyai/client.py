@@ -1,4 +1,4 @@
-"""Ibis OmniSciDB Client."""
+"""Ibis HeavyDB Client."""
 from pathlib import Path
 from typing import Optional, Union
 
@@ -8,10 +8,10 @@ import ibis.expr.types as ir
 import pandas as pd
 import pyarrow
 import regex as re
-from omnisci.cursor import Cursor
+from heavydb.cursor import Cursor
 
 from . import ddl
-from . import dtypes as omniscidb_dtypes
+from . import dtypes as heavydb_dtypes
 
 fully_qualified_re = re.compile(r"(.*)\.(?:`(.*)`|(.*))")
 
@@ -30,15 +30,15 @@ def _validate_compatible(from_schema, to_schema):
     return
 
 
-class OmniSciDBDataType:
-    """OmniSciDB Backend Data Type."""
+class HeavyDBDataType:
+    """HeavyDB Backend Data Type."""
 
     __slots__ = 'typename', 'nullable'
 
     # using impala.client._HS2_TTypeId_to_dtype as reference
-    dtypes = omniscidb_dtypes.sql_to_ibis_dtypes
+    dtypes = heavydb_dtypes.sql_to_ibis_dtypes
     ibis_dtypes = {v: k for k, v in dtypes.items()}
-    _omniscidb_to_ibis_dtypes = omniscidb_dtypes.sql_to_ibis_dtypes_str
+    _heavydb_to_ibis_dtypes = heavydb_dtypes.sql_to_ibis_dtypes_str
 
     def __init__(self, typename, nullable=True):
         if typename not in self.dtypes:
@@ -55,11 +55,11 @@ class OmniSciDBDataType:
 
     def __repr__(self):
         """Return the backend name and the datatype name."""
-        return '<OmniSciDB {}>'.format(str(self))
+        return '<HeavyDB {}>'.format(str(self))
 
     @classmethod
     def parse(cls, spec: str):
-        """Return a OmniSciDBDataType related to the given data type name.
+        """Return a HeavyDBDataType related to the given data type name.
 
         Parameters
         ----------
@@ -67,7 +67,7 @@ class OmniSciDBDataType:
 
         Returns
         -------
-        OmniSciDBDataType
+        HeavyDBDataType
         """
         if spec.startswith('Nullable'):
             return cls(spec[9:-1], nullable=True)
@@ -76,7 +76,7 @@ class OmniSciDBDataType:
 
     def to_ibis(self):
         """
-        Return the Ibis data type correspondent to the current OmniSciDB type.
+        Return the Ibis data type correspondent to the current HeavyDB type.
 
         Returns
         -------
@@ -87,7 +87,7 @@ class OmniSciDBDataType:
     @classmethod
     def from_ibis(cls, dtype, nullable=None):
         """
-        Return a OmniSciDBDataType correspondent to the given Ibis data type.
+        Return a HeavyDBDataType correspondent to the given Ibis data type.
 
         Parameters
         ----------
@@ -96,7 +96,7 @@ class OmniSciDBDataType:
 
         Returns
         -------
-        OmniSciDBDataType
+        HeavyDBDataType
 
         Raises
         ------
@@ -116,7 +116,7 @@ class OmniSciDBDataType:
         return cls(typename, nullable=nullable)
 
 
-class OmniSciDBDefaultCursor:
+class HeavyDBDefaultCursor:
     """Default cursor that exports a result to Pandas Data Frame."""
 
     def __init__(self, cursor):
@@ -152,7 +152,7 @@ class OmniSciDBDefaultCursor:
         pass
 
 
-class OmniSciDBGPUCursor(OmniSciDBDefaultCursor):
+class HeavyDBGPUCursor(HeavyDBDefaultCursor):
     """Cursor that exports result to GPU Dataframe."""
 
     def to_df(self):
@@ -174,18 +174,18 @@ def get_cursor_class(use_gpu: bool):
     geo compatible cursor, or if not, a default cursor.
     """
     if use_gpu:
-        return OmniSciDBGPUCursor
+        return HeavyDBGPUCursor
 
     try:
-        from .geo import OmniSciDBGeoCursor
+        from .geo import HeavyDBGeoCursor
     except ImportError:
-        return OmniSciDBDefaultCursor
+        return HeavyDBDefaultCursor
     else:
-        return OmniSciDBGeoCursor
+        return HeavyDBGeoCursor
 
 
-class OmniSciDBTable(ir.TableExpr):
-    """References a physical table in the OmniSciDB metastore."""
+class HeavyDBTable(ir.TableExpr):
+    """References a physical table in the HeavyDB metastore."""
 
     @property
     def _qualified_name(self):
@@ -244,7 +244,7 @@ class OmniSciDBTable(ir.TableExpr):
             [
                 (
                     col.name,
-                    OmniSciDBDataType.parse(col.type),
+                    HeavyDBDataType.parse(col.type),
                     col.precision,
                     col.scale,
                     col.comp_param,
@@ -274,7 +274,7 @@ class OmniSciDBTable(ir.TableExpr):
         """
         Load a data frame into database.
 
-        Wraps the LOAD DATA DDL statement. Loads data into an OmniSciDB table
+        Wraps the LOAD DATA DDL statement. Loads data into an HeavyDB table
         from pandas.DataFrame or pyarrow.Table
 
         Parameters
@@ -283,7 +283,7 @@ class OmniSciDBTable(ir.TableExpr):
 
         Returns
         -------
-        query : OmniSciDBQuery
+        query : HeavyDBQuery
         """
         stmt = ddl.LoadData(self._qualified_name, df)
         return self._client.raw_sql(stmt)
@@ -297,7 +297,7 @@ class OmniSciDBTable(ir.TableExpr):
         threads: Optional[int] = None,
     ):
         """
-        Load data into an Omniscidb table from CSV file.
+        Load data into an HeavyDB table from CSV file.
 
         Wraps the COPY FROM DML statement.
 
@@ -315,18 +315,18 @@ class OmniSciDBTable(ir.TableExpr):
 
         Returns
         -------
-        query : OmniSciDBQuery
+        query : HeavyDBQuery
 
         Examples
         --------
         # assumptions:
         #   - dataset can be found on ./datasets/functional_alltypes.csv
         #       https://github.com/ibis-project/testing-data/blob/master/functional_alltypes.csv
-        #   - omnisci server is launched on localhost and using port: 6274
+        #   - HeavyDB server is launched on localhost and using port: 6274
 
         import ibis
 
-        conn = ibis.omniscidb.connect(
+        conn = ibis.heavyai.connect(
             host="localhost",
             port="6274",
             user="admin",
@@ -364,7 +364,7 @@ class OmniSciDBTable(ir.TableExpr):
         """
         kwargs = {
             'header': header,
-            # 'quote' field couldn't be empty string for omnisci backend
+            # 'quote' field couldn't be empty string for HeavyDB backend
             'quote': quotechar if quotechar else '"',
             'quoted': bool(quotechar),
             'delimiter': delimiter,
@@ -394,7 +394,7 @@ class OmniSciDBTable(ir.TableExpr):
 
         Returns
         -------
-        renamed : OmniSciDBTable
+        renamed : HeavyDBTable
         """
         statement = ddl.RenameTable(self._qualified_name, new_name)
 
@@ -490,17 +490,17 @@ class OmniSciDBTable(ir.TableExpr):
         self._client.raw_sql(statement)
 
 
-@dt.dtype.register(OmniSciDBDataType)
-def omniscidb_to_ibis_dtype(omniscidb_dtype):
+@dt.dtype.register(HeavyDBDataType)
+def heavydb_to_ibis_dtype(heavydb_dtype):
     """
-    Register OmniSciDB Data Types.
+    Register HeavyDB Data Types.
 
     Parameters
     ----------
-    omniscidb_dtype : OmniSciDBDataType
+    heavydb_dtype : HeavyDBDataType
 
     Returns
     -------
     ibis.expr.datatypes.DataType
     """
-    return omniscidb_dtype.to_ibis()
+    return heavydb_dtype.to_ibis()

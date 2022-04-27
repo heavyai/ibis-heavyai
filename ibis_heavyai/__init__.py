@@ -1,38 +1,38 @@
-"""OmniSciDB backend."""
+"""HeavyDB backend."""
 from __future__ import annotations
 
 import warnings
-from importlib.metadata import PackageNotFoundError, version
 from typing import Optional, Union
 
+import heavyai
 import ibis.common.exceptions as com
 import ibis.expr.operations as ops
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 import pandas as pd
 import pyarrow
-import pyomnisci
 import regex as re
+from heavydb._parsers import _extract_column_details
+from heavydb.dtypes import TDatumType as heavydb_dtype
 from ibis.backends.base import Database
 from ibis.backends.base.sql import BaseSQLBackend
 from ibis.backends.base.sql.compiler import DDL, DML
-from omnisci._parsers import _extract_column_details
-from omnisci.dtypes import TDatumType as pyomnisci_dtype
+from importlib_metadata import PackageNotFoundError, version
 
 from . import ddl
-from . import dtypes as omniscidb_dtypes
-from .client import OmniSciDBDataType, OmniSciDBTable, get_cursor_class
-from .compiler import OmniSciDBCompiler
-from .udf import OmniSciDBUDF
+from . import dtypes as heavydb_dtypes
+from .client import HeavyDBDataType, HeavyDBTable, get_cursor_class
+from .compiler import HeavyDBCompiler
+from .udf import HeavyDBUDF
 
 try:
-    __version__ = version("ibis_omniscidb")
+    __version__ = version("ibis_heavyai")
 except PackageNotFoundError:
     __version__ = ""
 
 
 try:
-    from cudf import DataFrame as GPUDataFrame
+    from cudf import DataFrame as GPUDataFrame  # noqa
 except (ImportError, OSError):
     GPUDataFrame = None
 
@@ -40,14 +40,14 @@ __all__ = ('Backend', "__version__")
 
 
 class Backend(BaseSQLBackend):
-    """When the backend is loaded, this class becomes `ibis.omniscidb`."""
+    """When the backend is loaded, this class becomes `ibis.heavyai`."""
 
-    name = 'omniscidb'
+    name = 'heavyai'
     database_class = Database
-    table_expr_class = OmniSciDBTable
-    compiler = OmniSciDBCompiler
+    table_expr_class = HeavyDBTable
+    compiler = HeavyDBCompiler
     db_name: str | None
-    con: pyomnisci.Connection
+    con: heavyai.Connection
 
     def __del__(self):
         """Close the connection when instance is deleted."""
@@ -76,7 +76,7 @@ class Backend(BaseSQLBackend):
         ipc: Optional[bool] = None,
         gpu_device: Optional[int] = None,
     ):
-        """Create a client for OmniSciDB backend.
+        """Create a client for HeavyDB backend.
 
         Parameters
         ----------
@@ -97,7 +97,7 @@ class Backend(BaseSQLBackend):
 
         Returns
         -------
-        OmniSciDBClient
+        HeavyDBClient
         """
         new_backend = self.__class__()
         new_backend.uri = uri
@@ -128,12 +128,12 @@ class Backend(BaseSQLBackend):
                 'or all `user`, `password` and `database` must be provided.'
             )
 
-        new_backend.con = pyomnisci.connect(
+        new_backend.con = heavyai.connect(
             uri=uri, host=host, port=port, protocol=protocol, **kwargs
         )
 
         # used for UDF
-        new_backend.udf = OmniSciDBUDF(
+        new_backend.udf = HeavyDBUDF(
             host=new_backend.con._host,
             port=new_backend.con._port,
             database=new_backend.con._dbname,
@@ -143,7 +143,7 @@ class Backend(BaseSQLBackend):
         return new_backend
 
     def close(self):
-        """Close OmniSciDB connection and drop any temporary objects."""
+        """Close HeavyDB connection and drop any temporary objects."""
         self.con.close()
 
     def _adapt_types(self, descr):
@@ -152,7 +152,7 @@ class Backend(BaseSQLBackend):
 
         for col in descr:
             names.append(col.name)
-            col_type = OmniSciDBDataType._omniscidb_to_ibis_dtypes[col.type]
+            col_type = HeavyDBDataType._heavydb_to_ibis_dtypes[col.type]
             col_type.nullable = col.nullable
             adapted_types.append(col_type)
         return names, adapted_types
@@ -180,7 +180,7 @@ class Backend(BaseSQLBackend):
             )
 
     def _fully_qualified_name(self, name, database):
-        # OmniSciDB raises error sometimes with qualified names
+        # HeavyDB raises error sometimes with qualified names
         return name
 
     def _get_list(self, cur):
@@ -202,8 +202,8 @@ class Backend(BaseSQLBackend):
         return sch.Schema.from_tuples(
             (
                 r.col_name,
-                OmniSciDBDataType._omniscidb_to_ibis_dtypes[
-                    pyomnisci_dtype._VALUES_TO_NAMES[r.col_type.type]
+                HeavyDBDataType._heavydb_to_ibis_dtypes[
+                    heavydb_dtype._VALUES_TO_NAMES[r.col_type.type]
                 ],
             )
             for r in result
@@ -266,12 +266,12 @@ class Backend(BaseSQLBackend):
         Exception
             if execution method fails.
         """
-        # time context is not implemented for omniscidb yet
+        # time context is not implemented for heavydb yet
         kwargs.pop('timecontext', None)
         # raise an Exception if kwargs is not empty:
         if kwargs:
             raise com.IbisInputError(
-                '"OmniSciDB.execute" method just support the follow parameter:'
+                '"HeavyDB.execute" method just support the follow parameter:'
                 ' "query", "results", "ipc" and "gpu_device". The follow extra'
                 ' parameters was given: "{}".'.format(', '.join(kwargs.keys()))
             )
@@ -304,11 +304,11 @@ class Backend(BaseSQLBackend):
         return result
 
     def ast_schema(self, query_ast, ipc=None, gpu_device=None):
-        """Allow ipc and gpu_device params, used in OmniSciDB `execute`."""
+        """Allow ipc and gpu_device params, used in HeavyDB `execute`."""
         return super().ast_schema(query_ast)
 
     def fetch_from_cursor(self, cursor, schema):
-        """Fetch OmniSciDB cursor and return a dataframe."""
+        """Fetch HeavyDB cursor and return a dataframe."""
         result = cursor.to_df()
         # TODO: try to use `apply_to` for cudf.DataFrame using cudf 0.9
         if GPUDataFrame is None or not isinstance(result, GPUDataFrame):
@@ -318,7 +318,7 @@ class Backend(BaseSQLBackend):
 
     def create_database(self, name, owner=None):
         """
-        Create a new OmniSciDB database.
+        Create a new HeavyDB database.
 
         Parameters
         ----------
@@ -343,7 +343,7 @@ class Backend(BaseSQLBackend):
             [
                 (
                     col.name,
-                    OmniSciDBDataType.parse(col.type),
+                    HeavyDBDataType.parse(col.type),
                     col.nullable,
                     col.precision,
                     col.scale,
@@ -365,7 +365,7 @@ class Backend(BaseSQLBackend):
 
     def drop_database(self, name, force=False):
         """
-        Drop an OmniSciDB database.
+        Drop an HeavyDB database.
 
         Parameters
         ----------
@@ -395,7 +395,7 @@ class Backend(BaseSQLBackend):
 
     def create_user(self, name, password, is_super=False):
         """
-        Create a new OmniSciDB user.
+        Create a new HeavyDB user.
 
         Parameters
         ----------
@@ -415,7 +415,7 @@ class Backend(BaseSQLBackend):
         self, name, password=None, is_super=None, insert_access=None
     ):
         """
-        Alter OmniSciDB user parameters.
+        Alter HeavyDB user parameters.
 
         Parameters
         ----------
@@ -624,7 +624,7 @@ class Backend(BaseSQLBackend):
         """
         Load data into a given table.
 
-        Wraps the LOAD DATA DDL statement. Loads data into an OmniSciDB table
+        Wraps the LOAD DATA DDL statement. Loads data into an HeavyDB table
         by physically moving data files.
 
         Parameters
@@ -655,7 +655,7 @@ class Backend(BaseSQLBackend):
         """
         if self.db_name != name and name is not None:
             self.con.close()
-            self.con = pyomnisci.connect(
+            self.con = heavyai.connect(
                 uri=self.uri,
                 user=self.user,
                 password=self.password,
@@ -744,7 +744,7 @@ class Backend(BaseSQLBackend):
         schema : ibis Schema
         """
         cols = {
-            col.name: omniscidb_dtypes.sql_to_ibis_dtypes[col.type](
+            col.name: heavydb_dtypes.sql_to_ibis_dtypes[col.type](
                 nullable=col.nullable
             )
             for col in self.con.get_table_details(table_name)
@@ -780,7 +780,7 @@ class Backend(BaseSQLBackend):
         string
             Version of the backend library.
         """
-        return pyomnisci.__version__
+        return heavyai.__version__
 
 
 def connect(
@@ -796,8 +796,8 @@ def connect(
     gpu_device: Optional[int] = None,
 ):
     warnings.warn(
-        '`ibis_omniscidb.connect(...)` is deprecated and will be removed in '
-        'a future version. Use `ibis.omniscidb.connect(...)` instead.',
+        '`ibis_heavyai.connect(...)` is deprecated and will be removed in '
+        'a future version. Use `ibis.heavyai.connect(...)` instead.',
         FutureWarning,
     )
     return Backend().connect(

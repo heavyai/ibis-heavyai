@@ -10,13 +10,13 @@ because the lack of the soft dependencies.
 import geopandas
 import pandas as pd
 import shapely.wkt
-from omnisci.cursor import Cursor
-from omnisci.dtypes import TDatumType as pyomnisci_dtype
+from heavydb.cursor import Cursor
+from heavydb.dtypes import TDatumType as heavydb_dtype
 
-from .client import OmniSciDBDefaultCursor
+from .client import HeavyDBDefaultCursor
 
 
-class OmniSciDBGeoCursor(OmniSciDBDefaultCursor):
+class HeavyDBGeoCursor(HeavyDBDefaultCursor):
     """Cursor that exports result to GeoPandas Data Frame."""
 
     def to_df(self):
@@ -38,14 +38,14 @@ class OmniSciDBGeoCursor(OmniSciDBDefaultCursor):
         col_names = [c.name for c in cursor_description]
         result = pd.DataFrame(cursor.fetchall(), columns=col_names)
 
-        # get geo types from pyomnisci
+        # get geo types from heavydb
         geotypes = (
-            pyomnisci_dtype.POINT,
-            pyomnisci_dtype.LINESTRING,
-            pyomnisci_dtype.POLYGON,
-            pyomnisci_dtype.MULTIPOLYGON,
-            pyomnisci_dtype.GEOMETRY,
-            pyomnisci_dtype.GEOGRAPHY,
+            heavydb_dtype.POINT,
+            heavydb_dtype.LINESTRING,
+            heavydb_dtype.POLYGON,
+            heavydb_dtype.MULTIPOLYGON,
+            heavydb_dtype.GEOMETRY,
+            heavydb_dtype.GEOGRAPHY,
         )
 
         geo_column = None

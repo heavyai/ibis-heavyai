@@ -1,5 +1,5 @@
 # scm versioning
-ibis_omniscidb/_version.py
+ibis_heavyai/_version.py
 
 *.swp
 *.pyc
@@ -7,10 +7,7 @@ __pycache__
 .ipynb_checkpoints
 .coverage
 coverage.xml
-*.egg-info/
-junit.xml
+
 .vscode/
-.eggs/
-rever/
-build/
+.idea
 dist/

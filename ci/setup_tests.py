@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """
-Script to set up the tests of the Ibis OmniSciDB backend.
+Script to set up the tests of the Ibis HeavyDB backend.
 
 It downloads the data from the Ibis repository, and loads
-it into the local OmniSciDB instance.
+it into the local HeavyDB instance.
 """
 import os
 import pathlib
@@ -11,8 +11,8 @@ import sys
 import urllib.request
 import zipfile
 
+import heavyai
 import pandas
-import pyomnisci
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -69,12 +69,12 @@ def main(repo_url, schema, tables, data_directory, **params):
     download(repo_url, data_directory)
 
     # connection
-    print('Initializing OmniSci...', file=sys.stderr)
-    default_db = 'omnisci'
+    print('Initializing HeavyDB...', file=sys.stderr)
+    default_db = 'heavyai'
     database = params["database"]
 
     if database != default_db:
-        conn = pyomnisci.connect(
+        conn = heavyai.connect(
             host=params['host'],
             user=params['user'],
             password=params['password'],
@@ -86,16 +86,16 @@ def main(repo_url, schema, tables, data_directory, **params):
         try:
             conn.execute(stmt)
         except Exception:
-            print(f'OmniSci DDL statement {stmt} failed', file=sys.stderr)
+            print(f'HeavyDB DDL statement {stmt} failed', file=sys.stderr)
 
-        stmt = 'CREATE DATABASE {}'.format(database)
+        stmt = f'CREATE DATABASE {database}'
         try:
             conn.execute(stmt)
         except Exception:
-            print(f'OmniSci DDL statement {stmt} failed', file=sys.stderr)
+            print(f'HeavyDB DDL statement {stmt} failed', file=sys.stderr)
         conn.close()
 
-    conn = pyomnisci.connect(
+    conn = heavyai.connect(
         host=params['host'],
         user=params['user'],
         password=params['password'],
@@ -109,7 +109,7 @@ def main(repo_url, schema, tables, data_directory, **params):
         try:
             conn.execute(stmt)
         except Exception:
-            print(f'OmniSci DDL statement \n{stmt}\n failed', file=sys.stderr)
+            print(f'HeavyDB DDL statement \n{stmt}\n failed', file=sys.stderr)
 
     # import data
     for table, df in read_tables(tables, data_directory):

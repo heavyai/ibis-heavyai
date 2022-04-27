@@ -8,16 +8,16 @@ on:
 
 jobs:
   tests:
-    name: Tests OmniSciDB
+    name: Tests HeavyDB
     runs-on: ubuntu-latest
 
     env:
-      BACKENDS: "omniscidb"
+      BACKENDS: "heavydb"
 
     strategy:
       fail-fast: false
       matrix:
-        pyomnisci-version: ["stable", "dev"]
+        heavyai-version: ["stable", "dev"]
 
     defaults:
       run:
@@ -25,76 +25,38 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
     - name: setup conda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        activate-environment: ibis-omniscidb
+        activate-environment: ibis-heavyai
         channels: conda-forge
-        environment-file: environment-dev.yaml
+        environment-file: environment.yaml
         mamba-version: "*"
 
-    - name: start omniscidb service
-      run: docker-compose --file ci/docker-compose.yaml up -d omniscidb
+    - name: start heavydb service
+      run: docker-compose --file ci/docker-compose.yaml up -d heavydb
 
-    - name: wait for omniscidb service
+    - name: wait for heavydb service
       run: docker-compose --file ci/docker-compose.yaml up waiter
 
     - name: install dependencies
       run: |
-        if [[ "${{ matrix.pyomnisci-version }}" == "dev" ]]; then
-          python -m pip install git+https://github.com/omnisci/pyomnisci.git
+        if [[ "${{ matrix.heavyai-version }}" == "dev" ]]; then
+          python -m pip install git+https://github.com/heavyai/heavyai.git
           python -m pip install git+https://github.com/ibis-project/ibis.git
         fi
         python -m pip install -e .
-
-    - name: show environment
-      run: conda list
 
     - name: setup tests
       run: python ci/setup_tests.py
 
     - name: run custom backend tests
-      run: python -m pytest ibis_omniscidb -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
+      run: python -m pytest ibis_heavyai/tests -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
 
     - name: run ibis backend tests
-      run: PYTEST_BACKENDS="omniscidb" python -m pytest --pyargs ibis.backends.tests
-      if: always()
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash -l {0}
-
-    steps:
-
-    - name: checkout
-      uses: actions/checkout@v1
-
-    - name: setup conda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        activate-environment: ibis-omniscidb
-        channels: conda-forge
-        environment-file: environment-dev.yaml
-        mamba-version: "*"
-
-    - name: install dependencies
-      run: |
-        python -m pip install -e .
-        pre-commit install
-
-    - name: show environment
-      run: conda list
-
-    - name: pre-commit check
-      run: pre-commit run --all-files
-
-    - name: pydocstyle
-      run: pydocstyle .
+      run: PYTEST_BACKENDS="heavyai" python -m pytest --pyargs ibis.backends.tests
       if: always()

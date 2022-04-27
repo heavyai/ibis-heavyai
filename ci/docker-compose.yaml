@@ -1,18 +1,18 @@
 version: '3'
 services:
 
-  omniscidb:
-    image: omnisci/core-os-cpu:v5.5.2
-    hostname: omniscidb
+  heavydb:
+    image: heavyai/core-os-cpu
+    hostname: heavydb
     ports:
       - 6274:6274
       - 6278:6278
     volumes:
-      - ./omnisci.conf:/omnisci-storage/omnisci.conf
+      - ./heavydb.conf:/heavydb-storage/heavydb.conf
 
   waiter:
     image: jwilder/dockerize
     command: |
-      dockerize -wait tcp://omniscidb:6274
+      dockerize -wait tcp://heavydb:6274
         -wait-retry-interval 5s
         -timeout 1m
