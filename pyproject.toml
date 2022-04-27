@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "ibis-framework >=2.0",
+    "ibis-framework >=2.0, <3",
     "heavyai",
     "rbc-project >=0.8.0",
     "pyarrow >=3.0.0",
@@ -89,4 +89,17 @@ markers = [
     "only_on_backends",  # replaced by notimpl ibis>2.1.2
     "notimpl",
     "min_spark_version",
+    "never",
+    "broken",
+    "sqlite",
+    "pyspark",
+    "postgres",
+    "pandas",
+    "mysql",
+    "impala",
+    "duckdb",
+    "datafusion",
+    "dask",
+    "clickhouse",
+    "heavyai",
 ]
