@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "ibis-framework >=2.0",
+    "ibis-framework >=2.0, <3",
     "heavyai",
     "rbc-project >=0.8.0",
     "pyarrow >=3.0.0",
@@ -61,7 +61,6 @@ exclude = [
 line-length = 79
 skip-string-normalization = true
 target-version = ["py37", "py38", "py39", "py310"]
-exclude = "docs"
 
 [tool.isort]
 ensure_newline_before_comments = true
@@ -71,9 +70,6 @@ include_trailing_comma = true
 
 [tool.mypy]
 ignore_missing_imports = true
-exclude = [
-    'ibis_heavyai/tests',
-]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -93,4 +89,17 @@ markers = [
     "only_on_backends",  # replaced by notimpl ibis>2.1.2
     "notimpl",
     "min_spark_version",
+    "never",
+    "broken",
+    "sqlite",
+    "pyspark",
+    "postgres",
+    "pandas",
+    "mysql",
+    "impala",
+    "duckdb",
+    "datafusion",
+    "dask",
+    "clickhouse",
+    "heavyai",
 ]

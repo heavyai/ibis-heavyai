@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
 
   heavydb:
@@ -8,10 +8,12 @@ services:
       - 6274:6274
       - 6278:6278
     volumes:
-      - ./heavydb.conf:/heavydb-storage/heavydb.conf
+      - ./heavydb.conf:/var/lib/heavyai/heavy.conf:ro
 
   waiter:
     image: jwilder/dockerize
+    depends_on:
+      - heavydb
     command: |
       dockerize -wait tcp://heavydb:6274
         -wait-retry-interval 5s
