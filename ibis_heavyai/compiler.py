@@ -5,10 +5,11 @@ from io import StringIO
 import ibis
 import ibis.common.exceptions as com
 import ibis.expr.operations as ops
+import ibis.expr.rules as rlz
 import ibis.expr.types as ir
 import ibis.util as util
 from ibis.backends.base.sql import compiler
-from ibis.expr.api import _add_methods, _binop_expr, _unary_op
+from ibis.expr.api import _add_methods
 
 from . import operations as heavydb_ops
 from .identifiers import quote_identifier  # noqa: F401
@@ -251,6 +252,32 @@ def heavydb_rewrite_not_any(expr: ibis.Expr) -> ibis.Expr:
     ibis.Expr
     """
     return heavydb_ops._not_any(expr)
+
+
+def _binop_expr(name, klass):
+    def f(self, other):
+        try:
+            other = rlz.any(other)
+            op = klass(self, other)
+            return op.to_expr()
+        except (com.IbisTypeError, NotImplementedError):
+            return NotImplemented
+
+    f.__name__ = name
+
+    return f
+
+
+def _unary_op(name, klass, doc=None):
+    def f(arg):
+        return klass(arg).to_expr()
+
+    f.__name__ = name
+    if doc is not None:
+        f.__doc__ = doc
+    else:
+        f.__doc__ = klass.__doc__
+    return f
 
 
 _add_methods(
