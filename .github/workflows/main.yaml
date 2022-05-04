@@ -22,10 +22,10 @@ jobs:
       fail-fast: false
       matrix:
         ibis-version: ["<3", ">=3"]
-        deps-channel: ["stable", "dev"]
+        deps-channel: ["stable"]
         include:
-          - ibis-version: "<3"
-            deps-channel: ["stable"]
+          - ibis-version: ">=3"
+            deps-channel: ["dev"]
 
     defaults:
       run:
