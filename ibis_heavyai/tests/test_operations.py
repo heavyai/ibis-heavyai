@@ -115,7 +115,7 @@ def test_quote_name(alltypes, name):
 
 def test_timestamp_col(alltypes):
     # https://github.com/ibis-project/ibis/issues/1613
-    alltypes[alltypes.timestamp_col < '2000-03-01'].execute()
+    alltypes[alltypes.timestamp_col < ibis.timestamp('2000-03-01')].execute()
 
 
 @pytest.mark.parametrize(
