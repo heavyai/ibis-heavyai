@@ -804,8 +804,11 @@ def _arbitrary(translator, expr):
 class NumericTruncate(ops.NumericBinaryOp):
     """Truncates x to y decimal places."""
 
-    output_dtype = rlz.dtype_like('left')
-    output_shape = rlz.shape_like('left')
+    try:
+        output_dtype = rlz.dtype_like('left')
+        output_shape = rlz.shape_like('left')
+    except AttributeError:  # ibis<3
+        output_type = rlz.shape_like('left', dt.float)
 
 
 # GEOMETRIC
@@ -814,15 +817,21 @@ class NumericTruncate(ops.NumericBinaryOp):
 class Conv_4326_900913_X(ops.UnaryOp):
     """Converts WGS-84 latitude to WGS-84 Web Mercator x coordinate."""
 
-    output_dtype = rlz.dtype_like('left')
-    output_shape = rlz.shape_like('left')
+    try:
+        output_dtype = rlz.dtype_like('left')
+        output_shape = rlz.shape_like('left')
+    except AttributeError:  # ibis<3
+        output_type = rlz.shape_like('left', dt.float)
 
 
 class Conv_4326_900913_Y(ops.UnaryOp):
     """Converts WGS-84 longitude to WGS-84 Web Mercator y coordinate."""
 
-    output_dtype = rlz.dtype_like('left')
-    output_shape = rlz.shape_like('left')
+    try:
+        output_dtype = rlz.dtype_like('left')
+        output_shape = rlz.shape_like('left')
+    except AttributeError:  # ibis<3
+        output_type = rlz.shape_like('left', dt.float)
 
 
 # String
