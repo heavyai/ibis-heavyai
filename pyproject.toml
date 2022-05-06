@@ -37,7 +37,7 @@ test = [
 ]
 
 dev = [
-    "heavyai[test]",
+    "ibis-heavyai[test]",
     "pre-commit",
     "flit"
 ]
