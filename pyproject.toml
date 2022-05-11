@@ -26,6 +26,7 @@ dependencies = [
     "shapely",
     "geopandas",
     "importlib_metadata",  # drop for python >3.7
+    "packaging"
 ]
 
 [project.optional-dependencies]
