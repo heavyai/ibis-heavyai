@@ -2,8 +2,13 @@ name: Main
 
 on:
   push:
-    branches: main
+    branches:
+      - main
   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -16,7 +21,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        heavyai-version: ["stable", "dev"]
+        ibis-version: ["<3", ">=3"]
+        deps-channel: ["stable"]
+        include:
+          - ibis-version: ">=3"
+            deps-channel: ["dev"]
 
     defaults:
       run:
@@ -44,7 +53,7 @@ jobs:
 
     - name: install dependencies
       run: |
-        if [[ "${{ matrix.heavyai-version }}" == "dev" ]]; then
+        if [[ "${{ matrix.deps-channel }}" == "dev" ]]; then
           python -m pip install git+https://github.com/heavyai/heavyai.git
           python -m pip install git+https://github.com/ibis-project/ibis.git
         fi
@@ -55,7 +64,3 @@ jobs:
 
     - name: run custom backend tests
       run: python -m pytest ibis_heavyai/tests -ra --junitxml=junit.xml --cov=ibis --cov-report=xml:coverage.xml
-
-    - name: run ibis backend tests
-      run: PYTEST_BACKENDS="heavyai" python -m pytest --pyargs ibis.backends.tests
-      if: always()

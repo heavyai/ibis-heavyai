@@ -20,9 +20,12 @@ from ibis.backends.base.sql.registry import (
     operation_registry,
     time_range_to_range_window,
 )
+from packaging.version import Version
 
 from . import dtypes as heavydb_dtypes
 from .identifiers import quote_identifier
+
+_ibis_legacy = Version(ibis.__version__) < Version("3.0")
 
 _sql_type_names = heavydb_dtypes.ibis_dtypes_str_to_sql
 
@@ -804,7 +807,11 @@ def _arbitrary(translator, expr):
 class NumericTruncate(ops.NumericBinaryOp):
     """Truncates x to y decimal places."""
 
-    output_type = rlz.shape_like('left', dt.float)
+    if _ibis_legacy:
+        output_type = rlz.shape_like('left', dt.float)
+    else:
+        output_dtype = rlz.dtype_like('left')
+        output_shape = rlz.shape_like('left')
 
 
 # GEOMETRIC
@@ -813,13 +820,21 @@ class NumericTruncate(ops.NumericBinaryOp):
 class Conv_4326_900913_X(ops.UnaryOp):
     """Converts WGS-84 latitude to WGS-84 Web Mercator x coordinate."""
 
-    output_type = rlz.shape_like('arg', dt.float)
+    if _ibis_legacy:
+        output_type = rlz.shape_like('left', dt.float)
+    else:
+        output_dtype = rlz.dtype_like('left')
+        output_shape = rlz.shape_like('left')
 
 
 class Conv_4326_900913_Y(ops.UnaryOp):
     """Converts WGS-84 longitude to WGS-84 Web Mercator y coordinate."""
 
-    output_type = rlz.shape_like('arg', dt.float)
+    if _ibis_legacy:
+        output_type = rlz.shape_like('left', dt.float)
+    else:
+        output_dtype = rlz.dtype_like('left')
+        output_shape = rlz.shape_like('left')
 
 
 # String
@@ -1082,7 +1097,6 @@ _date_ops = {
 # AGGREGATION/REDUCTION
 _agg_ops = {
     ops.HLLCardinality: approx_count_distinct,
-    ops.DistinctColumn: unary_prefix_op('distinct'),
     ops.Arbitrary: _arbitrary,
     ops.Sum: _reduction('sum'),
     ops.Mean: _reduction('avg'),

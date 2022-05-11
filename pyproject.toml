@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ibis-heavyai"
-version = "1.0"
+version = "1.1"
 requires-python = ">=3.7"
 authors = [{name = "Heavy.AI", email = "community@heavy.ai"}]
 description = "Ibis HeavyDB backend"
@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "ibis-framework >=2.0, <3",
+    "ibis-framework >=2.0",
     "heavyai",
     "rbc-project >=0.8.0",
     "pyarrow >=3.0.0",
@@ -26,6 +26,7 @@ dependencies = [
     "shapely",
     "geopandas",
     "importlib_metadata",  # drop for python >3.7
+    "packaging"
 ]
 
 [project.optional-dependencies]
@@ -37,7 +38,7 @@ test = [
 ]
 
 dev = [
-    "heavyai[test]",
+    "ibis-heavyai[test]",
     "pre-commit",
     "flit"
 ]
@@ -54,7 +55,7 @@ name = "ibis_heavyai"
 
 [tool.flit.sdist]
 exclude = [
-    "ci/*", ".github/*", "*.yaml", ".*"
+    "ci/*", ".github/*", "*.yaml", ".*", "ibis_heavyai/tests/*", "docs/*"
 ]
 
 [tool.black]
