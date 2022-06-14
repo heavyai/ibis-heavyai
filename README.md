@@ -33,4 +33,4 @@ conda install -c conda-forge ibis-heavyai
 ## Documentation
 
 The ibis-heavyai documentation can be found
-[here](https://github.com/heavyai/ibis-heavyai/docs/heavyai.rst).
+[here](https://github.com/heavyai/ibis-heavyai/blob/main/docs/heavyai.rst).
