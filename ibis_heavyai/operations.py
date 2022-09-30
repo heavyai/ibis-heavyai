@@ -811,7 +811,7 @@ def _arbitrary(translator, expr):
 # MATH
 
 
-class NumericTruncate(NumericBinary):
+class NumericTruncate(NumericBinary):  # type: ignore
     """Truncates x to y decimal places."""
 
     if _ibis_legacy:
@@ -824,7 +824,7 @@ class NumericTruncate(NumericBinary):
 # GEOMETRIC
 
 
-class Conv_4326_900913_X(Unary):
+class Conv_4326_900913_X(Unary):  # type: ignore
     """Converts WGS-84 latitude to WGS-84 Web Mercator x coordinate."""
 
     if _ibis_legacy:
@@ -834,7 +834,7 @@ class Conv_4326_900913_X(Unary):
         output_shape = rlz.shape_like('left')
 
 
-class Conv_4326_900913_Y(Unary):
+class Conv_4326_900913_Y(Unary):  # type: ignore
     """Converts WGS-84 longitude to WGS-84 Web Mercator y coordinate."""
 
     if _ibis_legacy:
