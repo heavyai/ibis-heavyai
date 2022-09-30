@@ -228,7 +228,7 @@ A new Class database function would be like this (`my_backend_operations.py`):
 
 .. code-block:: python
 
-    class MyNewFunction(ops.UnaryOp):
+    class MyNewFunction(ops.Unary):
         """My new class function"""
         output_type = rlz.shape_like('arg', 'float')
 
