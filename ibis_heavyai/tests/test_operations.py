@@ -154,6 +154,7 @@ def test_agg_with_bool(alltypes, ibis_op, sql_op):
     assert regex.sub('', expr.compile()) == regex.sub('', sql_check)
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     'expr_fn',
     [
