@@ -70,7 +70,10 @@ class HeavyDBSelect(compiler.Select):
 
         buf = StringIO()
 
-        n, offset = self.limit.n, self.limit.offset
+        if isinstance(self.limit, dict):
+            n, offset = self.limit['n'], self.limit['offset']
+        else:
+            n, offset = self.limit.n, self.limit.offset
         buf.write('LIMIT {}'.format(n))
         if offset is not None and offset != 0:
             buf.write(', {}'.format(offset))

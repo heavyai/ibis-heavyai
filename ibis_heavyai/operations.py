@@ -29,6 +29,13 @@ _ibis_legacy = Version(ibis.__version__) < Version("3.0")
 
 _sql_type_names = heavydb_dtypes.ibis_dtypes_str_to_sql
 
+if _ibis_legacy:
+    Unary = ops.UnaryOp
+    NumericBinary = ops.NumericBinaryOp
+else:
+    Unary = ops.Unary
+    NumericBinary = ops.NumericBinary
+
 
 def _is_floating(*args):
     for arg in args:
@@ -804,7 +811,7 @@ def _arbitrary(translator, expr):
 # MATH
 
 
-class NumericTruncate(ops.NumericBinary):
+class NumericTruncate(NumericBinary):
     """Truncates x to y decimal places."""
 
     if _ibis_legacy:
@@ -817,7 +824,7 @@ class NumericTruncate(ops.NumericBinary):
 # GEOMETRIC
 
 
-class Conv_4326_900913_X(ops.Unary):
+class Conv_4326_900913_X(Unary):
     """Converts WGS-84 latitude to WGS-84 Web Mercator x coordinate."""
 
     if _ibis_legacy:
@@ -827,7 +834,7 @@ class Conv_4326_900913_X(ops.Unary):
         output_shape = rlz.shape_like('left')
 
 
-class Conv_4326_900913_Y(ops.Unary):
+class Conv_4326_900913_Y(Unary):
     """Converts WGS-84 longitude to WGS-84 Web Mercator y coordinate."""
 
     if _ibis_legacy:

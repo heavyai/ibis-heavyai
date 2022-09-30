@@ -119,6 +119,7 @@ def test_timestamp_col(alltypes):
     alltypes[alltypes.timestamp_col < ibis.timestamp('2000-03-01')].execute()
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     ('result_fn', 'expected_fn'),
     [
