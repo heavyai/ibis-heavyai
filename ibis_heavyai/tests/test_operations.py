@@ -99,6 +99,7 @@ def test_cross_join(alltypes):
     assert df['count'][0] == 730
 
 
+@pytest.mark.xfail
 def test_where_operator(alltypes):
     t = alltypes.sort_by('index').limit(10)
     expr = ibis.where(t.index > 4, 1, 0)
