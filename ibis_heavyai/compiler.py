@@ -70,7 +70,7 @@ class HeavyDBSelect(compiler.Select):
 
         buf = StringIO()
 
-        n, offset = self.limit['n'], self.limit['offset']
+        n, offset = self.limit.n, self.limit.offset
         buf.write('LIMIT {}'.format(n))
         if offset is not None and offset != 0:
             buf.write(', {}'.format(offset))
@@ -309,7 +309,7 @@ class HeavyDBCompiler(compiler.Compiler):
     select_class = HeavyDBSelect
     union_class = None
 
-    @staticmethod
+    @classmethod
     def _make_union(union_class, expr, context):
         raise com.UnsupportedOperationError(
             "HeavyDB backend doesn't support Union operation"
