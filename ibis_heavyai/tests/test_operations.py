@@ -137,6 +137,7 @@ def test_arbitrary_none(alltypes, df_alltypes, result_fn, expected_fn):
     pd.testing.assert_series_equal(pd.Series([result]), pd.Series([expected]))
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     ('ibis_op', 'sql_op'),
     [('sum', 'sum'), ('mean', 'avg'), ('max', 'max'), ('min', 'min')],
