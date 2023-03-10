@@ -9,7 +9,6 @@ import ibis.expr.rules as rlz
 import ibis.expr.types as ir
 import ibis.util as util
 from ibis.backends.base.sql import compiler
-from ibis.expr.api import _add_methods
 
 from . import operations as heavydb_ops
 from .identifiers import quote_identifier  # noqa: F401
@@ -102,12 +101,12 @@ class HeavyDBTableSetFormatter(compiler.TableSetFormatter):
         -------
         string
         """
-        op = self.expr.op()
+        op = self.node.op()
 
         if isinstance(op, ops.Join):
             self._walk_join_tree(op)
         else:
-            self.join_tables.append(self._format_table(self.expr))
+            self.join_tables.append(self._format_table(self.node))
 
         buf = StringIO()
         buf.write(self.join_tables[0])
@@ -281,25 +280,6 @@ def _unary_op(name, klass, doc=None):
     else:
         f.__doc__ = klass.__doc__
     return f
-
-
-_add_methods(
-    ir.NumericValue,
-    {
-        'conv_4326_900913_x': _unary_op(
-            'conv_4326_900913_x', heavydb_ops.Conv_4326_900913_X
-        ),
-        'conv_4326_900913_y': _unary_op(
-            'conv_4326_900913_y', heavydb_ops.Conv_4326_900913_Y
-        ),
-        'truncate': _binop_expr('truncate', heavydb_ops.NumericTruncate),
-    },
-)
-
-_add_methods(
-    ir.StringValue,
-    {'byte_length': _unary_op('length', heavydb_ops.ByteLength)},
-)
 
 
 class HeavyDBCompiler(compiler.Compiler):
