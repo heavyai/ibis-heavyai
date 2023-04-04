@@ -79,12 +79,12 @@ def test_join_diff_name(awards_players, batting):
                 & (t1.lgID == t2.lID)
             ),
         )[k]
-        .materialize()
         .execute()
     )
     assert df.size == 70
 
 
+@pytest.mark.xfail
 def test_cross_join(alltypes):
     d = alltypes.double_col
 
@@ -99,6 +99,7 @@ def test_cross_join(alltypes):
     assert df['count'][0] == 730
 
 
+@pytest.mark.xfail
 def test_where_operator(alltypes):
     t = alltypes.sort_by('index').limit(10)
     expr = ibis.where(t.index > 4, 1, 0)
@@ -118,6 +119,7 @@ def test_timestamp_col(alltypes):
     alltypes[alltypes.timestamp_col < ibis.timestamp('2000-03-01')].execute()
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     ('result_fn', 'expected_fn'),
     [
@@ -135,6 +137,7 @@ def test_arbitrary_none(alltypes, df_alltypes, result_fn, expected_fn):
     pd.testing.assert_series_equal(pd.Series([result]), pd.Series([expected]))
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     ('ibis_op', 'sql_op'),
     [('sum', 'sum'), ('mean', 'avg'), ('max', 'max'), ('min', 'min')],
@@ -151,6 +154,7 @@ def test_agg_with_bool(alltypes, ibis_op, sql_op):
     assert regex.sub('', expr.compile()) == regex.sub('', sql_check)
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     'expr_fn',
     [

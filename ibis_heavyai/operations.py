@@ -7,7 +7,7 @@ from typing import Callable, Dict
 
 import ibis
 import ibis.common.exceptions as com
-import ibis.common.geospatial as geo
+import ibis.backends.base.sql.registry.geospatial as geo
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.rules as rlz
@@ -16,18 +16,17 @@ import ibis.util as util
 from ibis import literal as L
 from ibis.backends.base.sql.registry import (
     cumulative_to_window,
-    format_window,
+    format_window_frame,
     operation_registry,
     time_range_to_range_window,
 )
-from packaging.version import Version
-
 from . import dtypes as heavydb_dtypes
 from .identifiers import quote_identifier
 
-_ibis_legacy = Version(ibis.__version__) < Version("3.0")
-
 _sql_type_names = heavydb_dtypes.ibis_dtypes_str_to_sql
+
+Unary = ops.Unary
+NumericBinary = ops.NumericBinary
 
 
 def _is_floating(*args):
@@ -191,7 +190,7 @@ def _reduction(func_name, sql_func_name=None, sql_signature='{}({})'):
 
         for arg in op.args:
             if arg is not where:
-                if arg.type().equals(dt.boolean):
+                if arg.output_dtype.is_boolean():
                     arg = arg.ifelse(1, 0)
                 args.append(arg)
 
@@ -767,7 +766,7 @@ def _table_column(translator, expr):
         proj_expr = table.projection([field_name]).to_array()
         return _table_array_view(translator, proj_expr)
 
-    if ctx.need_aliases():
+    if ctx.always_alias or len(ctx.table_refs) > 1:
         alias = ctx.get_ref(table)
         if alias is not None:
             quoted_name = '{}.{}'.format(alias, quoted_name)
@@ -804,37 +803,28 @@ def _arbitrary(translator, expr):
 # MATH
 
 
-class NumericTruncate(ops.NumericBinaryOp):
+class NumericTruncate(NumericBinary):  # type: ignore
     """Truncates x to y decimal places."""
 
-    if _ibis_legacy:
-        output_type = rlz.shape_like('left', dt.float)
-    else:
-        output_dtype = rlz.dtype_like('left')
-        output_shape = rlz.shape_like('left')
+    output_dtype = rlz.dtype_like('left')
+    output_shape = rlz.shape_like('left')
 
 
 # GEOMETRIC
 
 
-class Conv_4326_900913_X(ops.UnaryOp):
+class Conv_4326_900913_X(Unary):  # type: ignore
     """Converts WGS-84 latitude to WGS-84 Web Mercator x coordinate."""
 
-    if _ibis_legacy:
-        output_type = rlz.shape_like('left', dt.float)
-    else:
-        output_dtype = rlz.dtype_like('left')
-        output_shape = rlz.shape_like('left')
+    output_dtype = rlz.dtype_like('left')
+    output_shape = rlz.shape_like('left')
 
 
-class Conv_4326_900913_Y(ops.UnaryOp):
+class Conv_4326_900913_Y(Unary):  # type: ignore
     """Converts WGS-84 longitude to WGS-84 Web Mercator y coordinate."""
 
-    if _ibis_legacy:
-        output_type = rlz.shape_like('left', dt.float)
-    else:
-        output_dtype = rlz.dtype_like('left')
-        output_shape = rlz.shape_like('left')
+    output_dtype = rlz.dtype_like('left')
+    output_shape = rlz.shape_like('left')
 
 
 # String
@@ -862,9 +852,9 @@ def _window(translator, expr):
     )
 
     _unsupported_win_ops = (
-        ops.CMSMedian,
+        ops.ApproxMedian,
         ops.GroupConcat,
-        ops.HLLCardinality,
+        ops.ApproxCountDistinct,
         ops.All,  # TODO: change all to work as cumall
         ops.Any,  # TODO: change any to work as cumany
     )
@@ -909,7 +899,7 @@ def _window(translator, expr):
         if any(col_type in time_range_types for col_type in order_by_types):
             window = time_range_to_range_window(translator, window)
 
-    window_formatted = format_window(translator, op, window)
+    window_formatted = format_window_frame(translator, op, window)
 
     arg_formatted = translator.translate(arg)
     result = '{} {}'.format(arg_formatted, window_formatted)
@@ -1096,7 +1086,7 @@ _date_ops = {
 
 # AGGREGATION/REDUCTION
 _agg_ops = {
-    ops.HLLCardinality: approx_count_distinct,
+    ops.ApproxCountDistinct: approx_count_distinct,
     ops.Arbitrary: _arbitrary,
     ops.Sum: _reduction('sum'),
     ops.Mean: _reduction('avg'),
@@ -1106,9 +1096,9 @@ _agg_ops = {
 
 # GENERAL
 _general_ops = {
-    ops.Literal: literal,
+    # ops.Literal: literal,
     ops.NullLiteral: lambda *args: 'NULL',
-    ops.ValueList: _value_list,
+    # ops.ValueList: _value_list,
     ops.Cast: _cast,
     ops.Where: _where,
     ops.TableColumn: _table_column,
@@ -1148,9 +1138,7 @@ _udf_ops = {
 # UNSUPPORTED OPERATIONS
 _unsupported_ops = [
     # generic/aggregation
-    ops.CMSMedian,
-    ops.DecimalPrecision,
-    ops.DecimalScale,
+    ops.ApproxMedian,
     ops.BaseConvert,
     ops.CumulativeAny,
     ops.CumulativeAll,
@@ -1181,7 +1169,6 @@ _unsupported_ops = [
     ops.Reverse,
     ops.RegexExtract,
     ops.RegexReplace,
-    ops.ParseURL,
     ops.StartsWith,
     ops.EndsWith,
     # Numeric
