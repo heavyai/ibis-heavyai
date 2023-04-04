@@ -83,7 +83,6 @@ def test_database_layer(con, alltypes):
 def test_compile_toplevel():
     t = ibis.table([('foo', 'double')], name='t0')
     expr = t.foo.sum()
-    breakpoint()
     result = ibis.heavyai.compile(expr)
     expected = 'SELECT sum("foo") AS "sum"\nFROM t0'  # noqa
     assert str(result) == expected
