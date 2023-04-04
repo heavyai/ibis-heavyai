@@ -7,7 +7,7 @@ from typing import Callable, Dict
 
 import ibis
 import ibis.common.exceptions as com
-import ibis.common.geospatial as geo
+import ibis.backends.base.sql.registry.geospatial as geo
 import ibis.expr.datatypes as dt
 import ibis.expr.operations as ops
 import ibis.expr.rules as rlz
@@ -16,7 +16,7 @@ import ibis.util as util
 from ibis import literal as L
 from ibis.backends.base.sql.registry import (
     cumulative_to_window,
-    format_window,
+    format_window_frame,
     operation_registry,
     time_range_to_range_window,
 )
@@ -899,7 +899,7 @@ def _window(translator, expr):
         if any(col_type in time_range_types for col_type in order_by_types):
             window = time_range_to_range_window(translator, window)
 
-    window_formatted = format_window(translator, op, window)
+    window_formatted = format_window_frame(translator, op, window)
 
     arg_formatted = translator.translate(arg)
     result = '{} {}'.format(arg_formatted, window_formatted)
@@ -1169,7 +1169,6 @@ _unsupported_ops = [
     ops.Reverse,
     ops.RegexExtract,
     ops.RegexReplace,
-    ops.ParseURL,
     ops.StartsWith,
     ops.EndsWith,
     # Numeric
