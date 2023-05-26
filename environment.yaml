@@ -7,7 +7,7 @@ dependencies:
 
 # core
 - python >=3.7
-- ibis-framework-core >=2.0
+- ibis-framework-core <=2.0
 - heavyai
 - rbc >=0.8.0
 - pyarrow

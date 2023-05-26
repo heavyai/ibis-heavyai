@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "ibis-framework >=2.0",
+    "ibis-framework <=2.0",
     "heavyai",
     "rbc-project >=0.8.0",
     "pyarrow >=3.0.0",
