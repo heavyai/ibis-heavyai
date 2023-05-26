@@ -10,6 +10,7 @@ dependencies:
 - ibis-framework-core <=2.0
 - heavyai
 - rbc >=0.8.0
+- numpy <= 1.23
 - pyarrow
 - regex
 - pandas
