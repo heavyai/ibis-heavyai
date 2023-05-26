@@ -101,7 +101,7 @@ def test_cross_join(alltypes):
 
 def test_where_operator(alltypes):
     t = alltypes.sort_by('id').limit(10)
-    expr = ibis.where(t.id> 4, 1, 0)
+    expr = ibis.where(t.id > 4, 1, 0)
     counts = expr.execute().value_counts()
     assert counts[0] == 5
     assert counts[1] == 5
