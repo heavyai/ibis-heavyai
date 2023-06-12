@@ -7,7 +7,7 @@ dependencies:
 
 # core
 - python >=3.7
-- ibis-framework-core <=2.0
+- ibis-framework-core <=3.0
 - heavyai
 - rbc
 - numpy <= 1.23
