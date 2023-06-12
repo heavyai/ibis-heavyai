@@ -41,7 +41,12 @@ def download(repo_url, directory):
 def read_tables(names, data_directory):
     """Yield the data tables as pandas dataframes."""
     for name in names:
-        path = data_directory / 'testing-data-master' / '{}.csv'.format(name)
+        path = (
+            data_directory
+            / 'testing-data-master'
+            / 'csv'
+            / '{}.csv'.format(name)
+        )
 
         params = {}
 

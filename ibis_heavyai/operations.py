@@ -134,6 +134,7 @@ def fixed_arity(func_name: str, arity: int) -> Callable:
     com.UnsupportedOperationError
         If the arity is not compatible if the parameters of the expression.
     """
+
     # formatter function
     def formatter(translator, expr):
         op = expr.op()
@@ -234,6 +235,7 @@ def unary_prefix_op(prefix_op: str) -> Callable:
     -------
     function
     """
+
     # formatter function
     def formatter(translator, expr):
         op = expr.op()
@@ -256,6 +258,7 @@ def binary_infix_op(infix_sym: str) -> Callable:
     -------
     function
     """
+
     # formatter function
     def formatter(translator, expr):
         op = expr.op()

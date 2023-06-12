@@ -591,7 +591,7 @@ class Backend(BaseSQLBackend):
         self.execute(statement)
 
     def drop_table_or_view(
-        self, name: str, database: str = None, force: bool = False
+        self, name: str, database: Optional[str] = None, force: bool = False
     ):
         """Attempt to drop a relation that may be a view or table.
 
@@ -681,7 +681,7 @@ class Backend(BaseSQLBackend):
             Method not supported yet.
         """
 
-    def list_databases(self, like: str = None) -> list:
+    def list_databases(self, like: Optional[str] = None) -> list:
         """List all databases.
 
         Parameters
@@ -701,7 +701,9 @@ class Backend(BaseSQLBackend):
         pattern = re.compile(like)
         return list(filter(lambda t: pattern.findall(t), dbs))
 
-    def list_tables(self, like: str = None, database: str = None) -> list:
+    def list_tables(
+        self, like: Optional[str] = None, database: Optional[str] = None
+    ) -> list:
         """List all tables inside given or current database.
 
         Parameters

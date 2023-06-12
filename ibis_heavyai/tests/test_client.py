@@ -216,6 +216,8 @@ def test_explain(con, alltypes):
     con.explain(alltypes)
 
 
+# server must be executed with `--allowed-import-paths=/tmp`
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     'filename',
     ["/tmp/test_read_csv.csv", pathlib.Path("/tmp/test_read_csv.csv")],
