@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> As of 05/27/2026 this project has been deprecated. **ibis-heavyai** is not maintained anymore.
+>
+
 # Ibis HeavyDB backend
 
 [Ibis](https://ibis-project.org/) is a Python framework to write data analytics
