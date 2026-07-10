@@ -54,8 +54,6 @@ CREATE TABLE awards_players (
 DROP TABLE IF EXISTS functional_alltypes;
 
 CREATE TABLE functional_alltypes (
-    index BIGINT,
-    Unnamed__0 BIGINT,
     id INTEGER,
     bool_col BOOLEAN,
     tinyint_col SMALLINT,

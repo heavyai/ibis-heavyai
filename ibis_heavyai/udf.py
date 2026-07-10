@@ -122,6 +122,7 @@ def _create_function(name, nargs):
     -------
     Callable
     """
+
     # this function is used just as a template
     def y():
         pass
